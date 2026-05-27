@@ -52,7 +52,7 @@ export default function Dashboard({ onLogout }) {
                 <td style={styles.td}>{customer.contact_name}</td>
                 <td style={styles.td}>{customer.contact_phone}</td>
                 <td style={styles.td}>${customer.monthly_fee}</td>
-                <td style={styles.td}>Day {customer.due_date}</td>
+                <td style={styles.td}>Day {customer.payment_day}</td>
                 <td style={styles.td}>
                   <button
                     style={styles.deleteBtn}

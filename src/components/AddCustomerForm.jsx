@@ -7,7 +7,7 @@ export default function AddCustomerForm({ onCustomerAdded }) {
     contact_name: '',
     contact_phone: '',
     monthly_fee: '',
-    due_date: '',
+    payment_day: '',
   })
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState('')
@@ -28,12 +28,12 @@ export default function AddCustomerForm({ onCustomerAdded }) {
       contact_name: form.contact_name,
       contact_phone: form.contact_phone,
       monthly_fee: parseFloat(form.monthly_fee),
-      due_date: parseInt(form.due_date),
+      payment_day: parseInt(form.payment_day),
     }])
     if (error) {
       setError(error.message)
     } else {
-      setForm({ name: '', contact_name: '', contact_phone: '', monthly_fee: '', due_date: '' })
+      setForm({ name: '', contact_name: '', contact_phone: '', monthly_fee: '', payment_day: '' })
       onCustomerAdded()
     }
     setLoading(false)
@@ -47,8 +47,7 @@ export default function AddCustomerForm({ onCustomerAdded }) {
       <input style={styles.input} name="contact_name" placeholder="Contact Person Name" value={form.contact_name} onChange={handleChange} />
       <input style={styles.input} name="contact_phone" placeholder="Contact Phone (WhatsApp)" value={form.contact_phone} onChange={handleChange} />
       <input style={styles.input} name="monthly_fee" placeholder="Monthly Fee ($)" type="number" value={form.monthly_fee} onChange={handleChange} />
-      <input style={styles.input} name="due_date" placeholder="Due Date (day of month, e.g. 15)" type="number" value={form.due_date} onChange={handleChange} />
-
+      <input style={styles.input} name="payment_day" placeholder="Payment Day (day of month, e.g. 15)" type="number" value={form.payment_day} onChange={handleChange} />
       {error && <p style={styles.error}>{error}</p>}
 
       <button style={styles.button} onClick={handleSubmit} disabled={loading}>
