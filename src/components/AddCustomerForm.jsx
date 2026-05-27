@@ -17,7 +17,7 @@ export default function AddCustomerForm({ onCustomerAdded }) {
   }
 
   async function handleSubmit() {
-    if (!form.name || !form.contact_name || !form.contact_phone || !form.monthly_fee || !form.due_date) {
+    if (!form.name || !form.contact_name || !form.contact_phone || !form.monthly_fee || !form.payment_day) {
       setError('Please fill in all fields.')
       return
     }
