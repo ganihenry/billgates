@@ -1,5 +1,7 @@
 import { useState, useEffect } from 'react'
 import { supabase } from './lib/supabaseClient'
+import Dashboard from './pages/Dashboard'
+import AddCustomerForm from './components/AddCustomerForm'
 
 export default function App() {
   const [email, setEmail] = useState('')
@@ -7,8 +9,8 @@ export default function App() {
   const [user, setUser] = useState(null)
   const [error, setError] = useState('')
   const [loading, setLoading] = useState(false)
+  const [refreshKey, setRefreshKey] = useState(0)
 
-  // Check if someone is already logged in when app loads
   useEffect(() => {
     supabase.auth.getSession().then(({ data: { session } }) => {
       setUser(session?.user ?? null)
@@ -19,11 +21,8 @@ export default function App() {
     setLoading(true)
     setError('')
     const { data, error } = await supabase.auth.signInWithPassword({ email, password })
-    if (error) {
-      setError(error.message)
-    } else {
-      setUser(data.user)
-    }
+    if (error) setError(error.message)
+    else setUser(data.user)
     setLoading(false)
   }
 
@@ -32,49 +31,26 @@ export default function App() {
     setUser(null)
   }
 
-  // If logged in, show the dashboard placeholder
   if (user) {
     return (
-      <div style={styles.container}>
-        <div style={styles.card}>
-          <h1 style={styles.title}>✅ Login Successful!</h1>
-          <p style={styles.subtitle}>Logged in as: <strong>{user.email}</strong></p>
-          <p style={styles.subtitle}>Dashboard coming soon...</p>
-          <button style={styles.button} onClick={handleLogout}>Log Out</button>
+      <div style={{ backgroundColor: '#f0f4f8', minHeight: '100vh', padding: '24px' }}>
+        <Dashboard onLogout={handleLogout} key={refreshKey} />
+        <div style={{ maxWidth: '900px', margin: '0 auto' }}>
+          <AddCustomerForm onCustomerAdded={() => setRefreshKey(k => k + 1)} />
         </div>
       </div>
     )
   }
 
-  // If not logged in, show the login form
   return (
     <div style={styles.container}>
       <div style={styles.card}>
-        <h1 style={styles.title}>Tuition Admin</h1>
-        <p style={styles.subtitle}>Log in to manage your students</p>
-
-        <input
-          style={styles.input}
-          type="email"
-          placeholder="Email"
-          value={email}
-          onChange={e => setEmail(e.target.value)}
-        />
-        <input
-          style={styles.input}
-          type="password"
-          placeholder="Password"
-          value={password}
-          onChange={e => setPassword(e.target.value)}
-        />
-
+        <h1 style={styles.title}>PayFlow Admin</h1>
+        <p style={styles.subtitle}>Log in to manage your customers and payments</p>
+        <input style={styles.input} type="email" placeholder="Email" value={email} onChange={e => setEmail(e.target.value)} />
+        <input style={styles.input} type="password" placeholder="Password" value={password} onChange={e => setPassword(e.target.value)} />
         {error && <p style={styles.error}>{error}</p>}
-
-        <button
-          style={styles.button}
-          onClick={handleLogin}
-          disabled={loading}
-        >
+        <button style={styles.button} onClick={handleLogin} disabled={loading}>
           {loading ? 'Logging in...' : 'Log In'}
         </button>
       </div>
@@ -82,57 +58,12 @@ export default function App() {
   )
 }
 
-// Basic styles to make it look presentable
 const styles = {
-  container: {
-    minHeight: '100vh',
-    display: 'flex',
-    alignItems: 'center',
-    justifyContent: 'center',
-    backgroundColor: '#f0f4f8',
-    fontFamily: 'sans-serif',
-  },
-  card: {
-    backgroundColor: 'white',
-    padding: '40px',
-    borderRadius: '12px',
-    boxShadow: '0 4px 20px rgba(0,0,0,0.1)',
-    width: '100%',
-    maxWidth: '400px',
-    display: 'flex',
-    flexDirection: 'column',
-    gap: '12px',
-  },
-  title: {
-    margin: 0,
-    fontSize: '24px',
-    color: '#1a202c',
-  },
-  subtitle: {
-    margin: 0,
-    color: '#718096',
-    fontSize: '14px',
-  },
-  input: {
-    padding: '12px',
-    borderRadius: '8px',
-    border: '1px solid #e2e8f0',
-    fontSize: '16px',
-    outline: 'none',
-  },
-  button: {
-    padding: '12px',
-    borderRadius: '8px',
-    border: 'none',
-    backgroundColor: '#4f46e5',
-    color: 'white',
-    fontSize: '16px',
-    cursor: 'pointer',
-    marginTop: '4px',
-  },
-  error: {
-    color: '#e53e3e',
-    fontSize: '14px',
-    margin: 0,
-  },
+  container: { minHeight: '100vh', display: 'flex', alignItems: 'center', justifyContent: 'center', backgroundColor: '#f0f4f8', fontFamily: 'sans-serif' },
+  card: { backgroundColor: 'white', padding: '40px', borderRadius: '12px', boxShadow: '0 4px 20px rgba(0,0,0,0.1)', width: '100%', maxWidth: '400px', display: 'flex', flexDirection: 'column', gap: '12px' },
+  title: { margin: 0, fontSize: '24px', color: '#1a202c' },
+  subtitle: { margin: 0, color: '#718096', fontSize: '14px' },
+  input: { padding: '12px', borderRadius: '8px', border: '1px solid #e2e8f0', fontSize: '16px' },
+  button: { padding: '12px', borderRadius: '8px', border: 'none', backgroundColor: '#4f46e5', color: 'white', fontSize: '16px', cursor: 'pointer' },
+  error: { color: '#e53e3e', fontSize: '14px', margin: 0 },
 }
