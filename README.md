@@ -157,7 +157,7 @@ The app currently consists of:
 | Payment status dropdown in dashboard | Henry |
 | Dark theme UI redesign — dashboard | Henry |
 | Dark theme UI redesign — login page | Henry |
-| App deployed to Vercel | Henry |
+| App deployed to Vercel | Shao Qing |
 
 ---
 
