@@ -2,19 +2,29 @@ import { useEffect, useState } from 'react'
 import { supabase } from '../lib/supabaseClient'
 import EditCustomerForm from '../components/EditCustomerForm'
 import AddCustomerForm from '../components/AddCustomerForm'
+import { getPaymentsForMonth, updatePaymentStatus } from '../lib/paymentUtils'
 
 export default function Dashboard({ onLogout }) {
   const [customers, setCustomers] = useState([])
   const [loading, setLoading] = useState(true)
   const [editingCustomer, setEditingCustomer] = useState(null)
+  const [payments, setPayments] = useState([])
 
-  useEffect(() => { fetchCustomers() }, [])
+  useEffect(() => {
+    fetchCustomers()
+    fetchPayments()
+  }, [])
 
   async function fetchCustomers() {
     const { data, error } = await supabase.from('customers').select('*')
     if (error) console.error(error)
     else setCustomers(data)
     setLoading(false)
+  }
+
+  async function fetchPayments() {
+    const data = await getPaymentsForMonth()
+    setPayments(data)
   }
 
   async function deleteCustomer(id) {
@@ -24,6 +34,15 @@ export default function Dashboard({ onLogout }) {
   }
 
   const totalFees = customers.reduce((sum, c) => sum + Number(c.monthly_fee), 0)
+
+  function getPayment(customerId) {
+    return payments.find(p => p.customer_id === customerId)
+  }
+
+  async function handleStatusChange(payment, newStatus) {
+    await updatePaymentStatus(payment.id, newStatus)
+    fetchPayments()
+  }
 
   return (
     <div style={{ display: 'flex', minHeight: '100vh', position: 'relative', zIndex: 1 }}>
@@ -37,7 +56,7 @@ export default function Dashboard({ onLogout }) {
           </div>
         </div>
         <nav style={s.nav}>
-          {[['⊞','Dashboard'],['👥','Customers'],['💳','Payments'],['🔔','Reminders'],['📊','Reports']].map(([icon, label]) => (
+          {[['⊞', 'Dashboard'], ['👥', 'Customers'], ['💳', 'Payments'], ['🔔', 'Reminders'], ['📊', 'Reports']].map(([icon, label]) => (
             <div key={label} style={{ ...s.navItem, ...(label === 'Dashboard' ? s.navActive : {}) }}>
               <span style={{ width: 20, textAlign: 'center' }}>{icon}</span> {label}
             </div>
@@ -112,7 +131,7 @@ export default function Dashboard({ onLogout }) {
             <table style={{ width: '100%', borderCollapse: 'collapse' }}>
               <thead>
                 <tr>
-                  {['Customer', 'Phone', 'Monthly Fee', 'Payment Day', 'Actions'].map(h => (
+                  {['Customer', 'Phone', 'Monthly Fee', 'Payment Day', 'Status', 'Actions'].map(h => (
                     <th key={h} style={s.th}>{h}</th>
                   ))}
                 </tr>
@@ -135,14 +154,36 @@ export default function Dashboard({ onLogout }) {
                     </td>
                     <td style={{ ...s.td, color: '#9CA3AF', fontSize: 13 }}>Day {c.payment_day}</td>
                     <td style={s.td}>
+                      {(() => {
+                        const payment = getPayment(c.id)
+                        if (!payment) return <span style={s.badgeUnpaid}>Unpaid</span>
+                        return (
+                          <select
+                            value={payment.status}
+                            onChange={e => handleStatusChange(payment, e.target.value)}
+                            style={{
+                              ...s.statusSelect,
+                              ...(payment.status === 'paid' ? s.selectPaid
+                                : payment.status === 'overdue' ? s.selectOverdue
+                                  : s.selectUnpaid)
+                            }}
+                          >
+                            <option value="unpaid">Unpaid</option>
+                            <option value="paid">Paid</option>
+                            <option value="overdue">Overdue</option>
+                          </select>
+                        )
+                      })()}
+                    </td>
+                    <td style={s.td}>
                       <div style={{ display: 'flex', gap: 6 }}>
                         <button style={s.btnEdit}
-                          onMouseEnter={e => { e.target.style.color='#3B82F6'; e.target.style.borderColor='rgba(59,130,246,0.3)'; e.target.style.background='rgba(59,130,246,0.08)' }}
-                          onMouseLeave={e => { e.target.style.color='#9CA3AF'; e.target.style.borderColor='rgba(255,255,255,0.07)'; e.target.style.background='#1a1e2a' }}
+                          onMouseEnter={e => { e.target.style.color = '#3B82F6'; e.target.style.borderColor = 'rgba(59,130,246,0.3)'; e.target.style.background = 'rgba(59,130,246,0.08)' }}
+                          onMouseLeave={e => { e.target.style.color = '#9CA3AF'; e.target.style.borderColor = 'rgba(255,255,255,0.07)'; e.target.style.background = '#1a1e2a' }}
                           onClick={() => setEditingCustomer(c)}>Edit</button>
                         <button style={s.btnDelete}
-                          onMouseEnter={e => { e.target.style.color='#F87171'; e.target.style.borderColor='rgba(248,113,113,0.2)'; e.target.style.background='rgba(248,113,113,0.08)' }}
-                          onMouseLeave={e => { e.target.style.color='#6B7280'; e.target.style.borderColor='transparent'; e.target.style.background='transparent' }}
+                          onMouseEnter={e => { e.target.style.color = '#F87171'; e.target.style.borderColor = 'rgba(248,113,113,0.2)'; e.target.style.background = 'rgba(248,113,113,0.08)' }}
+                          onMouseLeave={e => { e.target.style.color = '#6B7280'; e.target.style.borderColor = 'transparent'; e.target.style.background = 'transparent' }}
                           onClick={() => deleteCustomer(c.id)}>Delete</button>
                       </div>
                     </td>
@@ -206,4 +247,9 @@ const s = {
   td: { padding: '15px 24px', fontSize: 14, verticalAlign: 'middle' },
   btnEdit: { padding: '6px 12px', borderRadius: 6, fontFamily: 'DM Sans, sans-serif', fontSize: 12, fontWeight: 500, cursor: 'pointer', border: '1px solid rgba(255,255,255,0.07)', background: '#1a1e2a', color: '#9CA3AF', transition: 'all 0.15s' },
   btnDelete: { padding: '6px 12px', borderRadius: 6, fontFamily: 'DM Sans, sans-serif', fontSize: 12, fontWeight: 500, cursor: 'pointer', border: '1px solid transparent', background: 'transparent', color: '#6B7280', transition: 'all 0.15s' },
+  badgeUnpaid: { display: 'inline-flex', alignItems: 'center', padding: '4px 10px', borderRadius: 20, fontSize: 12, fontWeight: 500, background: 'rgba(248,113,113,0.1)', color: '#F87171', border: '1px solid rgba(248,113,113,0.2)' },
+  statusSelect: { padding: '5px 10px', borderRadius: 20, fontSize: 12, fontWeight: 500, border: '1px solid', cursor: 'pointer', outline: 'none', fontFamily: 'DM Sans, sans-serif' },
+  selectPaid: { background: 'rgba(110,231,183,0.1)', color: '#6EE7B7', borderColor: 'rgba(110,231,183,0.2)' },
+  selectUnpaid: { background: 'rgba(248,113,113,0.1)', color: '#F87171', borderColor: 'rgba(248,113,113,0.2)' },
+  selectOverdue: { background: 'rgba(245,158,11,0.1)', color: '#F59E0B', borderColor: 'rgba(245,158,11,0.2)' },
 }
