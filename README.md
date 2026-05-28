@@ -56,11 +56,12 @@ By streamlining these administrative tasks, Bill Gates seeks to reduce manual wo
 | # | Feature | Type | Status |
 |---|---------|------|--------|
 | 1 | **Customer & Fee Management** — Add, edit, delete customers; set monthly fees and payment due dates via a centralised dashboard | Core | ✅ Done |
-| 2 | **Automated WhatsApp Reminders** — System automatically sends WhatsApp messages to customers before payment is due, including amount owed and payment details | Core | Upcoming |
-| 3 | **Payment Integration** — Customers pay via PayNow; system detects and verifies payment via Stripe webhooks and auto-updates dashboard | Core | Upcoming |
-| 4 | **Auto-Generated PDF Receipts** — Upon payment confirmation, a PDF receipt is generated and sent to the customer via WhatsApp | Extension | Upcoming |
-| 5 | **Overdue Payment Escalation** — If payment is not made by the due date, system sends follow-up reminders every X days and flags the customer as overdue | Extension | Upcoming |
-| 6 | **Monthly Summary Report** — At end of each month, admin receives an automated summary of total collected, outstanding payments, and number of customers paid | Extension | Upcoming |
+| 2 | **Payment Status Tracking** — Each customer has a per-month payment record. Admin can manually toggle status between Paid, Unpaid, and Overdue directly from the dashboard | Core | ✅ Done |
+| 3 | **Automated WhatsApp Reminders** — System automatically sends WhatsApp messages to customers before payment is due, including amount owed and payment details | Core | Upcoming |
+| 4 | **Payment Integration** — Customers pay via PayNow; system detects and verifies payment via Stripe webhooks and auto-updates dashboard | Core | Upcoming |
+| 5 | **Auto-Generated PDF Receipts** — Upon payment confirmation, a PDF receipt is generated and sent to the customer via WhatsApp | Extension | Upcoming |
+| 6 | **Overdue Payment Escalation** — If payment is not made by the due date, system sends follow-up reminders every X days and flags the customer as overdue | Extension | Upcoming |
+| 7 | **Monthly Summary Report** — At end of each month, admin receives an automated summary of total collected, outstanding payments, and number of customers paid | Extension | Upcoming |
 
 ---
 
@@ -81,9 +82,11 @@ By streamlining these administrative tasks, Bill Gates seeks to reduce manual wo
 
 The app currently consists of:
 
-- **Login Page** — Admin logs in securely via Supabase Auth (email + password). Session persists on page refresh.
-- **Customer Dashboard** — Displays all customers in a table with their name, contact person, phone number, monthly fee, and payment day. Admin can delete customers.
-- **Add Customer Form** — Admin fills in customer details and submits to add them to the database instantly.
+- **Login Page** — Admin logs in securely via Supabase Auth (email + password). Includes a show/hide password toggle. Session persists on page refresh.
+- **Customer Dashboard** — Displays all customers in a table with their name, contact person, phone number, monthly fee, payment day, and live payment status. Admin can add, edit, and delete customers.
+- **Payment Status Column** — Each customer row shows a colour-coded status badge (green for Paid, red for Unpaid, amber for Overdue). Admin can change the status directly from the dropdown in the table.
+- **Add Customer Form** — Embedded at the bottom of the dashboard. On submission, a payment record for the current month is automatically created for the new customer.
+- **Stat Cards** — At the top of the dashboard, three cards show total monthly fees, total number of customers, and the earliest upcoming payment day.
 
 **Database Schema (Supabase)**
 
@@ -98,6 +101,17 @@ The app currently consists of:
 | monthly_fee | numeric | Monthly payment amount |
 | payment_day | int4 | Day of month payment is due (e.g. 15) |
 
+`payments` table:
+
+| Column | Type | Description |
+|---|---|---|
+| id | int8 | Auto-generated unique ID |
+| customer_id | int8 | References the customer this payment belongs to |
+| month | text | Billing month in YYYY-MM format (e.g. 2026-06) |
+| amount | numeric | Amount due for that month |
+| status | text | Current status: unpaid, paid, or overdue |
+| paid_at | timestamptz | Timestamp of when payment was confirmed (nullable) |
+
 ---
 
 ## Development Plan
@@ -108,22 +122,22 @@ The app currently consists of:
 - [x] GitHub repository set up with version control
 - [x] React app initialised with Vite
 - [x] Supabase database and authentication configured
-- [x] Admin login feature fully working
-- [x] Customer dashboard — add, view, delete customers
-- [x] App running locally and accessible for evaluation
+- [x] Admin login with show/hide password toggle
+- [x] Customer dashboard — add, view, edit, delete customers
+- [x] Payment status tracking per customer per month (paid / unpaid / overdue)
+- [x] Stat cards showing total fees, customer count, and next payment day
+- [x] Dark themed professional UI across login and dashboard
+- [x] App deployed live on Vercel
 
 **Milestone 2 — Prototype: Core Features** *(By 29 June 2026)*
-- [ ] Edit customer details (Feature 1 completion)
-- [ ] Payment status column (paid / unpaid / overdue) on dashboard
-- [ ] Automated WhatsApp reminders via Twilio (Feature 2)
-- [ ] Stripe PayNow integration with webhook (Feature 3)
+- [ ] Automated WhatsApp reminders via Twilio (Feature 3)
+- [ ] Stripe PayNow integration with webhook (Feature 4)
 - [ ] Dashboard auto-updates on payment confirmation
 
 **Milestone 3 — Extended System** *(By 27 July 2026)*
-- [ ] Auto-generated PDF receipts sent via WhatsApp (Feature 4)
-- [ ] Overdue detection and follow-up reminders (Feature 5)
-- [ ] Monthly summary report auto-sent to admin (Feature 6)
-- [ ] UI polished to a clean, professional standard
+- [ ] Auto-generated PDF receipts sent via WhatsApp (Feature 5)
+- [ ] Overdue detection and automatic follow-up reminders (Feature 6)
+- [ ] Monthly summary report auto-sent to admin (Feature 7)
 - [ ] App deployed live with a real domain
 
 ---
@@ -133,13 +147,17 @@ The app currently consists of:
 | Task | Person |
 |---|---|
 | Project setup, GitHub repo, Supabase client | Henry |
-| Supabase table setup, customer form component | Shao Qing |
+| Supabase `customers` table setup | Shao Qing |
+| Add Customer form component | Shao Qing |
 | Customer dashboard page | Shao Qing |
+| Edit Customer form component | Henry |
 | App.jsx routing and wiring | Henry |
-| Twilio WhatsApp integration | TBD |
-| Stripe webhook integration | TBD |
-| PDF receipt generation | TBD |
-| UI polish and deployment | Both |
+| Payment status tracking — `payments` table setup | Shao Qing |
+| Payment utility functions (`paymentUtils.js`) | Henry |
+| Payment status dropdown in dashboard | Henry |
+| Dark theme UI redesign — dashboard | Henry |
+| Dark theme UI redesign — login page | Henry |
+| App deployed to Vercel | Henry |
 
 ---
 
@@ -151,14 +169,17 @@ The app currently consists of:
 tuition-app/
 ├── src/
 │   ├── components/
-│   │   └── AddCustomerForm.jsx   # Form to add a new customer
+│   │   ├── AddCustomerForm.jsx     # Form to add a new customer
+│   │   └── EditCustomerForm.jsx    # Modal popup to edit a customer
 │   ├── pages/
-│   │   └── Dashboard.jsx         # Customer list and management
+│   │   └── Dashboard.jsx           # Main dashboard — customers + payment status
 │   ├── lib/
-│   │   └── supabaseClient.js     # Supabase connection setup
-│   ├── App.jsx                   # Main app — login + routing
-│   └── main.jsx                  # React entry point
-├── .env                          # Secret keys (not committed to GitHub)
+│   │   ├── supabaseClient.js       # Supabase connection setup
+│   │   └── paymentUtils.js         # Payment record creation and status updates
+│   ├── App.jsx                     # Main app — login + routing
+│   └── main.jsx                    # React entry point
+├── index.html                      # App entry HTML (includes Google Fonts)
+├── .env                            # Secret keys (not committed to GitHub)
 ├── .gitignore
 ├── package.json
 └── README.md
@@ -168,7 +189,7 @@ tuition-app/
 
 **Prerequisites:**
 - Node.js (LTS) installed
-- A Supabase project set up with the `customers` table
+- A Supabase project set up with the `customers` and `payments` tables
 
 **Steps:**
 
@@ -198,7 +219,11 @@ Admin login is handled entirely by Supabase Auth. When the admin enters their em
 
 ### How the Database Works
 
-The app uses Supabase (PostgreSQL) as its database. All customer records are stored in the `customers` table. The frontend communicates directly with Supabase using the `@supabase/supabase-js` client library — there is no separate backend server needed for basic CRUD operations. Row Level Security (RLS) is currently disabled for development and will be enabled before deployment.
+The app uses Supabase (PostgreSQL) as its database. Customer records are stored in the `customers` table, and monthly payment records are stored in the `payments` table. When a new customer is added, a payment record for the current month is automatically created via `createPaymentForMonth()` in `paymentUtils.js`. The frontend communicates directly with Supabase using the `@supabase/supabase-js` client library — there is no separate backend server needed for CRUD operations. Row Level Security (RLS) is currently disabled for development.
+
+### How Payment Status Works
+
+Each customer has one payment record per billing month stored in the `payments` table. The current month is derived from the system date in `YYYY-MM` format. On the dashboard, each customer row fetches their payment record for the current month and displays a colour-coded status badge. The admin can change the status directly from a dropdown in the table, which calls `updatePaymentStatus()` to update the record in Supabase instantly.
 
 ### Environment Variables
 
