@@ -201,8 +201,10 @@ export default function Dashboard({ onLogout }) {
           <div style={s.sectionHeader}>
             <div style={s.sectionTitle}>Add New Customer</div>
           </div>
-          <AddCustomerForm onCustomerAdded={fetchCustomers} />
-        </div>
+          <AddCustomerForm onCustomerAdded={async () => {
+            await fetchCustomers()
+            await fetchPayments()
+          }} />        </div>
 
         {editingCustomer && (
           <EditCustomerForm

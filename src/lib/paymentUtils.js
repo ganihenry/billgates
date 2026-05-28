@@ -47,7 +47,7 @@ export async function updatePaymentStatus(paymentId, status) {
             status,
             paid_at: status === 'paid' ? new Date().toISOString() : null,
         })
-        .eq('id', paymentId)
+        .eq('id', Number(paymentId))
         .select()
     console.log('update result:', data)
     console.log('update error:', error)
