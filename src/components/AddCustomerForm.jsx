@@ -27,6 +27,8 @@ export default function AddCustomerForm({ onCustomerAdded }) {
       monthly_fee: parseFloat(form.monthly_fee),
       payment_day: parseInt(form.payment_day),
     }]).select()
+    console.log('inserted customer:', inserted)
+    console.log('insert error:', error)
 
     if (error) {
       setError(error.message)
