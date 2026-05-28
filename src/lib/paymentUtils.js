@@ -40,12 +40,15 @@ export async function getPaymentsForMonth() {
 
 // Updates a payment status manually
 export async function updatePaymentStatus(paymentId, status) {
-    const { error } = await supabase
+    console.log('updating paymentId:', paymentId, 'to status:', status)
+    const { data, error } = await supabase
         .from('payments')
         .update({
             status,
             paid_at: status === 'paid' ? new Date().toISOString() : null,
         })
         .eq('id', paymentId)
-    if (error) console.error(error)
+        .select()
+    console.log('update result:', data)
+    console.log('update error:', error)
 }

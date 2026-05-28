@@ -36,6 +36,8 @@ export default function Dashboard({ onLogout }) {
   const totalFees = customers.reduce((sum, c) => sum + Number(c.monthly_fee), 0)
 
   function getPayment(customerId) {
+    console.log('looking for customerId:', customerId, 'type:', typeof customerId)
+    console.log('payments:', payments)
     return payments.find(p => p.customer_id === customerId)
   }
 
