@@ -1,13 +1,15 @@
 import { useEffect, useState } from 'react'
 import { supabase } from '../lib/supabaseClient'
+import EditCustomerForm from '../components/EditCustomerForm'
 
-export default function Dashboard({ onLogout }) {
+export default function Dashboard({ onLogout, onRefresh }) {
   const [customers, setCustomers] = useState([])
   const [loading, setLoading] = useState(true)
+  const [editingCustomer, setEditingCustomer] = useState(null)
 
   useEffect(() => {
     fetchCustomers()
-  }, [])
+  }, [onRefresh])
 
   async function fetchCustomers() {
     const { data, error } = await supabase.from('customers').select('*')
@@ -55,6 +57,12 @@ export default function Dashboard({ onLogout }) {
                 <td style={styles.td}>Day {customer.payment_day}</td>
                 <td style={styles.td}>
                   <button
+                    style={styles.editBtn}
+                    onClick={() => setEditingCustomer(customer)}
+                  >
+                    Edit
+                  </button>
+                  <button
                     style={styles.deleteBtn}
                     onClick={() => deleteCustomer(customer.id)}
                   >
@@ -65,6 +73,14 @@ export default function Dashboard({ onLogout }) {
             ))}
           </tbody>
         </table>
+      )}
+
+      {editingCustomer && (
+        <EditCustomerForm
+          customer={editingCustomer}
+          onClose={() => setEditingCustomer(null)}
+          onCustomerUpdated={fetchCustomers}
+        />
       )}
     </div>
   )
@@ -79,5 +95,6 @@ const styles = {
   table: { width: '100%', borderCollapse: 'collapse' },
   th: { textAlign: 'left', padding: '12px', backgroundColor: '#f7fafc', borderBottom: '2px solid #e2e8f0', color: '#4a5568' },
   td: { padding: '12px', borderBottom: '1px solid #e2e8f0', color: '#2d3748' },
+  editBtn: { padding: '6px 12px', backgroundColor: '#ebf4ff', color: '#3182ce', border: 'none', borderRadius: '6px', cursor: 'pointer', marginRight: '8px' },
   deleteBtn: { padding: '6px 12px', backgroundColor: '#fed7d7', color: '#c53030', border: 'none', borderRadius: '6px', cursor: 'pointer' },
 }
