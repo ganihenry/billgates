@@ -1,7 +1,6 @@
 import { useState, useEffect } from 'react'
 import { supabase } from './lib/supabaseClient'
 import Dashboard from './pages/Dashboard'
-import AddCustomerForm from './components/AddCustomerForm'
 
 export default function App() {
   const [email, setEmail] = useState('')
@@ -9,7 +8,6 @@ export default function App() {
   const [user, setUser] = useState(null)
   const [error, setError] = useState('')
   const [loading, setLoading] = useState(false)
-  const [refreshKey, setRefreshKey] = useState(0)
   const [showPassword, setShowPassword] = useState(false)
 
   useEffect(() => {
@@ -35,80 +33,77 @@ export default function App() {
   if (user) {
     return (
       <div style={{ background: '#0d0f14', minHeight: '100vh' }}>
-        <Dashboard onLogout={handleLogout} key={refreshKey} />
-        <div style={{ marginLeft: 240, padding: '0 40px 40px' }}>
-          <AddCustomerForm onCustomerAdded={() => setRefreshKey(k => k + 1)} />
-        </div>
+        <Dashboard onLogout={handleLogout} />
       </div>
     )
   }
 
-return (
-  <div style={ls.page}>
-    {/* background grid */}
-    <div style={ls.grid} />
+  return (
+    <div style={ls.page}>
+      {/* background grid */}
+      <div style={ls.grid} />
 
-    <div style={{ position: 'relative', zIndex: 1, width: '100%', maxWidth: 400 }}>
+      <div style={{ position: 'relative', zIndex: 1, width: '100%', maxWidth: 400 }}>
 
-      {/* Logo + title */}
-      <div style={{ textAlign: 'center', marginBottom: 32 }}>
-        <div style={ls.logoIcon}>💸</div>
-        <div style={ls.logoText}>Bill Gates</div>
-        <div style={ls.logoSub}>Sign in to your admin account</div>
-      </div>
-
-      {/* Card */}
-      <div style={ls.card}>
-
-        {/* Email */}
-        <div style={ls.fieldGroup}>
-          <label style={ls.label}>Email</label>
-          <div style={{ position: 'relative' }}>
-            <span style={ls.fieldIcon}>✉</span>
-            <input
-              style={ls.input}
-              type="email"
-              placeholder="admin@yourbusiness.com"
-              value={email}
-              onChange={e => setEmail(e.target.value)}
-            />
-          </div>
+        {/* Logo + title */}
+        <div style={{ textAlign: 'center', marginBottom: 32 }}>
+          <div style={ls.logoIcon}>💸</div>
+          <div style={ls.logoText}>Bill Gates</div>
+          <div style={ls.logoSub}>Sign in to your admin account</div>
         </div>
 
-        {/* Password */}
-        <div style={ls.fieldGroup}>
-          <label style={ls.label}>Password</label>
-          <div style={{ position: 'relative' }}>
-            <span style={ls.fieldIcon}>🔒</span>
-            <input
-              style={{ ...ls.input, paddingRight: 44 }}
-              type={showPassword ? 'text' : 'password'}
-              placeholder="Enter your password"
-              value={password}
-              onChange={e => setPassword(e.target.value)}
-            />
-            <button
-              style={ls.eyeBtn}
-              onClick={() => setShowPassword(v => !v)}
-              type="button"
-              aria-label="Toggle password visibility"
-            >
-              {showPassword ? '🙈' : '👁'}
-            </button>
+        {/* Card */}
+        <div style={ls.card}>
+
+          {/* Email */}
+          <div style={ls.fieldGroup}>
+            <label style={ls.label}>Email</label>
+            <div style={{ position: 'relative' }}>
+              <span style={ls.fieldIcon}>✉</span>
+              <input
+                style={ls.input}
+                type="email"
+                placeholder="admin@yourbusiness.com"
+                value={email}
+                onChange={e => setEmail(e.target.value)}
+              />
+            </div>
           </div>
+
+          {/* Password */}
+          <div style={ls.fieldGroup}>
+            <label style={ls.label}>Password</label>
+            <div style={{ position: 'relative' }}>
+              <span style={ls.fieldIcon}>🔒</span>
+              <input
+                style={{ ...ls.input, paddingRight: 44 }}
+                type={showPassword ? 'text' : 'password'}
+                placeholder="Enter your password"
+                value={password}
+                onChange={e => setPassword(e.target.value)}
+              />
+              <button
+                style={ls.eyeBtn}
+                onClick={() => setShowPassword(v => !v)}
+                type="button"
+                aria-label="Toggle password visibility"
+              >
+                {showPassword ? '🙈' : '👁'}
+              </button>
+            </div>
+          </div>
+
+          {error && <p style={{ color: '#F87171', fontSize: 13, margin: 0 }}>{error}</p>}
+
+          <button style={ls.submitBtn} onClick={handleLogin} disabled={loading}>
+            {loading ? 'Signing in...' : 'Sign In'}
+          </button>
         </div>
 
-        {error && <p style={{ color: '#F87171', fontSize: 13, margin: 0 }}>{error}</p>}
-
-        <button style={ls.submitBtn} onClick={handleLogin} disabled={loading}>
-          {loading ? 'Signing in...' : 'Sign In'}
-        </button>
+        <div style={ls.footer}>Payment Management System · Bill Gates</div>
       </div>
-
-      <div style={ls.footer}>Payment Management System · Bill Gates</div>
     </div>
-  </div>
-)
+  )
 }
 
 const ls = {

@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react'
 import { supabase } from '../lib/supabaseClient'
 import EditCustomerForm from '../components/EditCustomerForm'
+import AddCustomerForm from '../components/AddCustomerForm'
 
 export default function Dashboard({ onLogout }) {
   const [customers, setCustomers] = useState([])
@@ -66,19 +67,19 @@ export default function Dashboard({ onLogout }) {
 
         {/* STAT CARDS */}
         <div style={s.statsGrid}>
-          <div style={{ ...s.statCard, '--glow': '#6EE7B7' }}>
+          <div style={s.statCard}>
             <div style={s.statIcon}>💰</div>
             <div style={s.statLabel}>Total Monthly Fees</div>
             <div style={s.statValue}>${totalFees.toLocaleString()}</div>
             <div style={s.statSub}>{customers.length} active customers</div>
           </div>
-          <div style={{ ...s.statCard }}>
+          <div style={s.statCard}>
             <div style={s.statIcon}>👥</div>
             <div style={s.statLabel}>Total Customers</div>
             <div style={s.statValue}>{customers.length}</div>
             <div style={s.statSub}>Registered in system</div>
           </div>
-          <div style={{ ...s.statCard }}>
+          <div style={s.statCard}>
             <div style={s.statIcon}>📅</div>
             <div style={s.statLabel}>Next Due</div>
             <div style={s.statValue}>
@@ -90,7 +91,7 @@ export default function Dashboard({ onLogout }) {
           </div>
         </div>
 
-        {/* TABLE */}
+        {/* CUSTOMER TABLE */}
         <div style={s.section}>
           <div style={s.sectionHeader}>
             <div style={s.sectionTitle}>
@@ -150,6 +151,14 @@ export default function Dashboard({ onLogout }) {
               </tbody>
             </table>
           )}
+        </div>
+
+        {/* ADD CUSTOMER FORM — dark themed, right below table */}
+        <div style={s.section}>
+          <div style={s.sectionHeader}>
+            <div style={s.sectionTitle}>Add New Customer</div>
+          </div>
+          <AddCustomerForm onCustomerAdded={fetchCustomers} />
         </div>
 
         {editingCustomer && (
