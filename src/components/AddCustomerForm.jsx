@@ -1,5 +1,6 @@
 import { useState } from 'react'
 import { supabase } from '../lib/supabaseClient'
+import { createPaymentForMonth } from '../lib/paymentUtils'
 
 export default function AddCustomerForm({ onCustomerAdded }) {
   const [form, setForm] = useState({
@@ -19,16 +20,19 @@ export default function AddCustomerForm({ onCustomerAdded }) {
     }
     setLoading(true)
     setError('')
-    const { error } = await supabase.from('customers').insert([{
+    const { data: inserted, error } = await supabase.from('customers').insert([{
       name: form.name,
       contact_name: form.contact_name,
       contact_phone: form.contact_phone,
       monthly_fee: parseFloat(form.monthly_fee),
       payment_day: parseInt(form.payment_day),
-    }])
+    }]).select()
+
     if (error) {
       setError(error.message)
     } else {
+      // Create a payment record for this month automatically
+      await createPaymentForMonth(inserted[0].id, parseFloat(form.monthly_fee))
       setForm({ name: '', contact_name: '', contact_phone: '', monthly_fee: '', payment_day: '' })
       onCustomerAdded()
     }
