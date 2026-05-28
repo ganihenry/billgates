@@ -33,9 +33,9 @@ export default function App() {
 
   if (user) {
     return (
-      <div style={{ backgroundColor: '#f0f4f8', minHeight: '100vh', padding: '24px' }}>
+      <div style={{ background: '#0d0f14', minHeight: '100vh' }}>
         <Dashboard onLogout={handleLogout} key={refreshKey} />
-        <div style={{ maxWidth: '900px', margin: '0 auto' }}>
+        <div style={{ marginLeft: 240, padding: '0 40px 40px' }}>
           <AddCustomerForm onCustomerAdded={() => setRefreshKey(k => k + 1)} />
         </div>
       </div>
