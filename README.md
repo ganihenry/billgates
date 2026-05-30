@@ -8,11 +8,53 @@
 
 ## Table of Contents
 
-1. [Motivation](#motivation)
-2. [Aim](#aim)
-3. [Features and Design of Application](#features-and-design-of-application)
-4. [Development Plan](#development-plan)
-5. [Documentation of System](#documentation-of-system)
+1. [Testing the App](#-testing-the-app)
+2. [Motivation](#motivation)
+3. [Aim](#aim)
+4. [Features and Design of Application](#features-and-design-of-application)
+5. [Development Plan](#development-plan)
+6. [Documentation of System](#documentation-of-system)
+
+---
+
+## 🔍 Testing the App
+
+The live app is deployed at: **https://billgates-nine.vercel.app/**
+
+> Account creation is not available to the public. Use the test credentials below to log in.
+
+**Login Credentials:**
+| Field | Value |
+|---|---|
+| Email | soshaoqing@gmail.com |
+| Password | Billgates123 |
+
+### How to Test the Current Features
+
+**1. Logging In**
+- Go to the live URL above
+- Enter the email and password provided
+- Click **Sign In** — you will be taken to the Customer Dashboard
+- Use the 👁 icon to show or hide the password while typing
+
+**2. Adding a Customer**
+- Scroll down to the **Add New Customer** form at the bottom of the dashboard
+- Fill in all 5 fields: Business/Name, Contact Person, WhatsApp Phone, Monthly Fee, and Payment Day
+- Click **Add Customer** — the new customer will appear in the table immediately with an Unpaid status
+
+**3. Editing a Customer**
+- Find any customer in the table and click the **Edit** button
+- A popup will appear with the customer's details pre-filled
+- Make your changes and click **Save Changes**, or click **Cancel** to discard
+
+**4. Changing Payment Status**
+- In the **Status** column, click the coloured badge for any customer
+- Select **Paid**, **Unpaid**, or **Overdue** from the dropdown
+- The badge colour updates instantly — green for Paid, red for Unpaid, amber for Overdue
+- The change is saved automatically, no button needed
+
+**5. Deleting a Customer**
+- Click the **Delete** button next to any customer to remove them from the system
 
 ---
 
@@ -157,7 +199,7 @@ The app currently consists of:
 | Payment status dropdown in dashboard | Henry |
 | Dark theme UI redesign — dashboard | Henry |
 | Dark theme UI redesign — login page | Henry |
-| App deployed to Vercel | Shao Qing |
+| App deployed to Vercel | Henry |
 
 ---
 
