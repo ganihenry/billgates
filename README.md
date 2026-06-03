@@ -27,7 +27,7 @@ The live app is deployed at: **https://billgates-nine.vercel.app/**
 | Field | Value |
 |---|---|
 | Email | soshaoqing@gmail.com |
-| Password | Billgates123 |
+| Password | BillGates123 |
 
 ### How to Test the Current Features
 
