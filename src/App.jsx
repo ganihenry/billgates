@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react'
 import { supabase } from './lib/supabaseClient'
 import Dashboard from './pages/Dashboard'
+import PaymentHistory from './pages/PaymentHistory'
 
 export default function App() {
   const [email, setEmail] = useState('')
@@ -9,6 +10,7 @@ export default function App() {
   const [error, setError] = useState('')
   const [loading, setLoading] = useState(false)
   const [showPassword, setShowPassword] = useState(false)
+  const [page, setPage] = useState('dashboard')
 
   useEffect(() => {
     supabase.auth.getSession().then(({ data: { session } }) => {
@@ -40,7 +42,15 @@ export default function App() {
   if (user) {
     return (
       <div style={{ background: '#0d0f14', minHeight: '100vh' }}>
-        <Dashboard onLogout={handleLogout} />
+        {page === 'dashboard' && (
+          <Dashboard
+            onLogout={handleLogout}
+            onNavigate={setPage}
+          />
+        )}
+        {page === 'history' && (
+          <PaymentHistory onBack={() => setPage('dashboard')} />
+        )}
       </div>
     )
   }

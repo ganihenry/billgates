@@ -4,7 +4,7 @@ import EditCustomerForm from '../components/EditCustomerForm'
 import AddCustomerForm from '../components/AddCustomerForm'
 import { getPaymentsForMonth, updatePaymentStatus, sendWhatsAppReminder } from '../lib/paymentUtils'
 
-export default function Dashboard({ onLogout }) {
+export default function Dashboard({ onLogout, onNavigate }) {
   const [customers, setCustomers] = useState([])
   const [loading, setLoading] = useState(true)
   const [editingCustomer, setEditingCustomer] = useState(null)
@@ -67,8 +67,13 @@ export default function Dashboard({ onLogout }) {
           </div>
         </div>
         <nav style={s.nav}>
-          {[['⊞', 'Dashboard'], ['👥', 'Customers'], ['💳', 'Payments'], ['🔔', 'Reminders'], ['📊', 'Reports']].map(([icon, label]) => (
-            <div key={label} style={{ ...s.navItem, ...(label === 'Dashboard' ? s.navActive : {}) }}>
+          {[['⊞','Dashboard'],['👥','Customers'],['💳','Payments'],['🔔','Reminders'],['📊','Reports']].map(([icon, label]) => (
+            <div key={label}
+              style={{ ...s.navItem, ...(label === 'Dashboard' ? s.navActive : {}) }}
+              onClick={() => {
+                if (label === 'Payments') onNavigate('history')
+              }}
+            >
               <span style={{ width: 20, textAlign: 'center' }}>{icon}</span> {label}
             </div>
           ))}
