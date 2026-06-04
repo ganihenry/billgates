@@ -3,6 +3,7 @@ import { supabase } from '../lib/supabaseClient'
 import EditCustomerForm from '../components/EditCustomerForm'
 import AddCustomerForm from '../components/AddCustomerForm'
 import { getPaymentsForMonth, updatePaymentStatus } from '../lib/paymentUtils'
+import { getPaymentsForMonth, updatePaymentStatus, sendWhatsAppReminder } from '../lib/paymentUtils'
 
 export default function Dashboard({ onLogout }) {
   const [customers, setCustomers] = useState([])
@@ -31,6 +32,15 @@ export default function Dashboard({ onLogout }) {
     const { error } = await supabase.from('customers').delete().eq('id', id)
     if (error) console.error(error)
     else fetchCustomers()
+  }
+
+  async function handleSendReminder(customer) {
+    const result = await sendWhatsAppReminder(customer)
+    if (result.success) {
+      alert(`✅ Reminder sent to ${customer.contact_name}!`)
+    } else {
+      alert(`❌ Failed to send: ${result.error}`)
+    }
   }
 
   const totalFees = customers.reduce((sum, c) => sum + Number(c.monthly_fee), 0)
@@ -187,6 +197,10 @@ export default function Dashboard({ onLogout }) {
                           onMouseEnter={e => { e.target.style.color = '#F87171'; e.target.style.borderColor = 'rgba(248,113,113,0.2)'; e.target.style.background = 'rgba(248,113,113,0.08)' }}
                           onMouseLeave={e => { e.target.style.color = '#6B7280'; e.target.style.borderColor = 'transparent'; e.target.style.background = 'transparent' }}
                           onClick={() => deleteCustomer(c.id)}>Delete</button>
+                        <button style={s.btnRemind}
+                          onMouseEnter={e => { e.target.style.color = '#6EE7B7'; e.target.style.borderColor = 'rgba(110,231,183,0.3)'; e.target.style.background = 'rgba(110,231,183,0.08)' }}
+                          onMouseLeave={e => { e.target.style.color = '#9CA3AF'; e.target.style.borderColor = 'rgba(255,255,255,0.07)'; e.target.style.background = '#1a1e2a' }}
+                          onClick={() => handleSendReminder(c)}>Remind</button>
                       </div>
                     </td>
                   </tr>
@@ -256,4 +270,5 @@ const s = {
   selectPaid: { background: 'rgba(110,231,183,0.1)', color: '#6EE7B7', borderColor: 'rgba(110,231,183,0.2)' },
   selectUnpaid: { background: 'rgba(248,113,113,0.1)', color: '#F87171', borderColor: 'rgba(248,113,113,0.2)' },
   selectOverdue: { background: 'rgba(245,158,11,0.1)', color: '#F59E0B', borderColor: 'rgba(245,158,11,0.2)' },
+  btnRemind: { padding: '6px 12px', borderRadius: 6, fontFamily: 'DM Sans, sans-serif', fontSize: 12, fontWeight: 500, cursor: 'pointer', border: '1px solid rgba(255,255,255,0.07)', background: '#1a1e2a', color: '#9CA3AF', transition: 'all 0.15s' },
 }

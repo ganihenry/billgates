@@ -52,3 +52,28 @@ export async function updatePaymentStatus(paymentId, status) {
     console.log('update result:', data)
     console.log('update error:', error)
 }
+
+export async function sendWhatsAppReminder(customer) {
+  const { data: { session } } = await supabase.auth.getSession()
+
+  const response = await fetch(
+    `${import.meta.env.VITE_SUPABASE_URL}/functions/v1/send-whatsapp`,
+    {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': `Bearer ${session.access_token}`,
+        'apikey': import.meta.env.VITE_SUPABASE_ANON_KEY,
+      },
+      body: JSON.stringify({
+        to: customer.contact_phone,
+        customerName: customer.contact_name,
+        amount: customer.monthly_fee,
+        paymentDay: customer.payment_day,
+      }),
+    }
+  )
+
+  const data = await response.json()
+  return data
+}
