@@ -2,6 +2,7 @@ import { useState, useEffect } from 'react'
 import { supabase } from './lib/supabaseClient'
 import Dashboard from './pages/Dashboard'
 import PaymentHistory from './pages/PaymentHistory'
+import Reports from './pages/Reports'
 
 export default function App() {
   const [email, setEmail] = useState('')
@@ -49,7 +50,10 @@ export default function App() {
           />
         )}
         {page === 'history' && (
-          <PaymentHistory onBack={() => setPage('dashboard')} />
+          <PaymentHistory onBack={() => setPage('dashboard')} onNavigate={setPage} />
+        )}
+        {page === 'reports' && (
+          <Reports onNavigate={setPage} />
         )}
       </div>
     )

@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react'
 import { supabase } from '../lib/supabaseClient'
 
-export default function PaymentHistory({ onBack }) {
+export default function PaymentHistory({ onBack, onNavigate }) {
   const [history, setHistory] = useState([])
   const [loading, setLoading] = useState(true)
   const [filterMonth, setFilterMonth] = useState('')
@@ -66,7 +66,10 @@ export default function PaymentHistory({ onBack }) {
           {[['⊞', 'Dashboard'], ['👥', 'Customers'], ['💳', 'Payments'], ['🔔', 'Reminders'], ['📊', 'Reports']].map(([icon, label]) => (
             <div key={label}
               style={{ ...s.navItem, ...(label === 'Payments' ? s.navActive : {}) }}
-              onClick={label === 'Dashboard' ? onBack : undefined}
+              onClick={() => {
+                if (label === 'Dashboard') onBack()
+                if (label === 'Reports') onNavigate('reports')
+              }}
             >
               <span style={{ width: 20, textAlign: 'center' }}>{icon}</span> {label}
             </div>
