@@ -4,7 +4,7 @@ import { createPaymentForMonth } from '../lib/paymentUtils'
 
 export default function AddCustomerForm({ onCustomerAdded }) {
   const [form, setForm] = useState({
-    name: '', contact_name: '', contact_phone: '', monthly_fee: '', payment_day: '',
+    name: '', contact_name: '', contact_phone: '', monthly_fee: '', payment_day: '', reminder_days_before: '3',
   })
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState('')
