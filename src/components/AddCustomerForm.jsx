@@ -64,6 +64,10 @@ export default function AddCustomerForm({ onCustomerAdded }) {
           <label style={f.label}>Payment Day</label>
           <input style={f.input} name="payment_day" placeholder="e.g. 15" type="number" value={form.payment_day} onChange={handleChange} />
         </div>
+        <div style={f.group}>
+          <label style={f.label}>Reminder (days before due)</label>
+          <input style={f.input} name="reminder_days_before" placeholder="e.g. 3" type="number" value={form.reminder_days_before} onChange={handleChange} />
+        </div>
       </div>
 
       {error && <p style={{ color: '#F87171', fontSize: 13, marginBottom: 12 }}>{error}</p>}
