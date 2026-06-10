@@ -26,6 +26,7 @@ export default function AddCustomerForm({ onCustomerAdded }) {
       contact_phone: form.contact_phone,
       monthly_fee: parseFloat(form.monthly_fee),
       payment_day: parseInt(form.payment_day),
+      reminder_days_before: parseInt(form.reminder_days_before) || 3,
     }]).select()
     console.log('inserted customer:', inserted)
     console.log('insert error:', error)
@@ -35,7 +36,7 @@ export default function AddCustomerForm({ onCustomerAdded }) {
     } else {
       // Create a payment record for this month automatically
       await createPaymentForMonth(inserted[0].id, parseFloat(form.monthly_fee))
-      setForm({ name: '', contact_name: '', contact_phone: '', monthly_fee: '', payment_day: '' })
+      setForm({ name: '', contact_name: '', contact_phone: '', monthly_fee: '', payment_day: '', reminder_days_before: '3' })
       onCustomerAdded()
     }
     setLoading(false)
