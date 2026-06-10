@@ -50,12 +50,23 @@ export default function EditCustomerForm({ customer, onClose, onCustomerUpdated 
       <div style={styles.modal}>
         <h2 style={styles.title}>Edit Customer</h2>
 
-        <input style={styles.input} name="name" placeholder="Business / Customer Name" value={form.name} onChange={handleChange} />
-        <input style={styles.input} name="contact_name" placeholder="Contact Person Name" value={form.contact_name} onChange={handleChange} />
-        <input style={styles.input} name="contact_phone" placeholder="Contact Phone (WhatsApp)" value={form.contact_phone} onChange={handleChange} />
-        <input style={styles.input} name="monthly_fee" placeholder="Monthly Fee ($)" type="number" value={form.monthly_fee} onChange={handleChange} />
-        <input style={styles.input} name="payment_day" placeholder="Payment Day (e.g. 15)" type="number" value={form.payment_day} onChange={handleChange} />
-        <input style={styles.input} name="reminder_days_before" placeholder="Reminder (days before due)" type="number" value={form.reminder_days_before} onChange={handleChange} />
+        <label style={styles.label}>Business / Customer Name</label>
+        <input style={styles.input} name="name" placeholder="e.g. Sunshine Tuition" value={form.name} onChange={handleChange} />
+
+        <label style={styles.label}>Contact Person</label>
+        <input style={styles.input} name="contact_name" placeholder="e.g. John Tan" value={form.contact_name} onChange={handleChange} />
+
+        <label style={styles.label}>WhatsApp Phone</label>
+        <input style={styles.input} name="contact_phone" placeholder="e.g. +6591234567" value={form.contact_phone} onChange={handleChange} />
+
+        <label style={styles.label}>Monthly Fee (SGD)</label>
+        <input style={styles.input} name="monthly_fee" placeholder="e.g. 200" type="number" value={form.monthly_fee} onChange={handleChange} />
+
+        <label style={styles.label}>Payment Day (1–31)</label>
+        <input style={styles.input} name="payment_day" placeholder="e.g. 15" type="number" value={form.payment_day} onChange={handleChange} />
+
+        <label style={styles.label}>Reminder Days Before Due</label>
+        <input style={styles.input} name="reminder_days_before" placeholder="e.g. 3" type="number" value={form.reminder_days_before} onChange={handleChange} />
 
         {error && <p style={styles.error}>{error}</p>}
 
@@ -95,6 +106,16 @@ const styles = {
   saveBtn: {
     flex: 1, padding: '10px', borderRadius: '8px', border: 'none',
     backgroundColor: '#4f46e5', color: 'white', fontSize: '15px', cursor: 'pointer',
+  },
+  label: {
+    display: 'block',
+    fontSize: '12px',
+    fontWeight: '600',
+    color: '#9ca3af',
+    textTransform: 'uppercase',
+    letterSpacing: '0.05em',
+    marginBottom: '4px',
+    marginTop: '12px',
   },
   error: { color: '#e53e3e', fontSize: '14px', margin: 0 },
 }
