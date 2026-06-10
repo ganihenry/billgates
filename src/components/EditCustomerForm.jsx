@@ -8,6 +8,7 @@ export default function EditCustomerForm({ customer, onClose, onCustomerUpdated 
     contact_phone: customer.contact_phone,
     monthly_fee: customer.monthly_fee,
     payment_day: customer.payment_day,
+    reminder_days_before: customer.reminder_days_before || 3,
   })
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState('')
@@ -31,6 +32,7 @@ export default function EditCustomerForm({ customer, onClose, onCustomerUpdated 
         contact_phone: form.contact_phone,
         monthly_fee: parseFloat(form.monthly_fee),
         payment_day: parseInt(form.payment_day),
+        reminder_days_before: parseInt(form.reminder_days_before) || 3,
       })
       .eq('id', customer.id)
 
@@ -53,6 +55,7 @@ export default function EditCustomerForm({ customer, onClose, onCustomerUpdated 
         <input style={styles.input} name="contact_phone" placeholder="Contact Phone (WhatsApp)" value={form.contact_phone} onChange={handleChange} />
         <input style={styles.input} name="monthly_fee" placeholder="Monthly Fee ($)" type="number" value={form.monthly_fee} onChange={handleChange} />
         <input style={styles.input} name="payment_day" placeholder="Payment Day (e.g. 15)" type="number" value={form.payment_day} onChange={handleChange} />
+        <input style={styles.input} name="reminder_days_before" placeholder="Reminder (days before due)" type="number" value={form.reminder_days_before} onChange={handleChange} />
 
         {error && <p style={styles.error}>{error}</p>}
 
