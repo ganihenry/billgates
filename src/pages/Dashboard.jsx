@@ -1,3 +1,4 @@
+import { createPaymentLink } from '../lib/stripeUtils';
 import { useEffect, useState } from 'react'
 import { supabase } from '../lib/supabaseClient'
 import EditCustomerForm from '../components/EditCustomerForm'
@@ -67,7 +68,7 @@ export default function Dashboard({ onLogout, onNavigate }) {
           </div>
         </div>
         <nav style={s.nav}>
-          {[['⊞','Dashboard'],['👥','Customers'],['💳','Payments'],['🔔','Reminders'],['📊','Reports']].map(([icon, label]) => (
+          {[['⊞', 'Dashboard'], ['👥', 'Customers'], ['💳', 'Payments'], ['🔔', 'Reminders'], ['📊', 'Reports']].map(([icon, label]) => (
             <div key={label}
               style={{ ...s.navItem, ...(label === 'Dashboard' ? s.navActive : {}) }}
               onClick={() => {
@@ -205,6 +206,28 @@ export default function Dashboard({ onLogout, onNavigate }) {
                           onMouseEnter={e => { e.target.style.color = '#6EE7B7'; e.target.style.borderColor = 'rgba(110,231,183,0.3)'; e.target.style.background = 'rgba(110,231,183,0.08)' }}
                           onMouseLeave={e => { e.target.style.color = '#9CA3AF'; e.target.style.borderColor = 'rgba(255,255,255,0.07)'; e.target.style.background = '#1a1e2a' }}
                           onClick={() => handleSendReminder(c)}>Remind</button>
+                        {(payment?.status === 'unpaid' || payment?.status === 'overdue') && (
+                          <button
+                            style={s.btnRemind}
+                            onMouseEnter={e => { e.target.style.color = '#818CF8'; e.target.style.borderColor = 'rgba(129,140,248,0.3)'; e.target.style.background = 'rgba(129,140,248,0.08)' }}
+                            onMouseLeave={e => { e.target.style.color = '#9CA3AF'; e.target.style.borderColor = 'rgba(255,255,255,0.07)'; e.target.style.background = '#1a1e2a' }}
+                            onClick={async () => {
+                              try {
+                                const url = await createPaymentLink(
+                                  payment.id,
+                                  c.id,
+                                  c.name,
+                                  c.monthly_fee
+                                );
+                                await navigator.clipboard.writeText(url);
+                                alert('Payment link copied! Paste it into WhatsApp.');
+                              } catch (err) {
+                                alert('Error generating link: ' + err.message);
+                              }
+                            }}>
+                            💳 PayNow
+                          </button>
+                        )}
                       </div>
                     </td>
                   </tr>
