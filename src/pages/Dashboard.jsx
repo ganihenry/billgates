@@ -14,6 +14,20 @@ export default function Dashboard({ onLogout, onNavigate }) {
   useEffect(() => {
     fetchCustomers()
     fetchPayments()
+    const channel = supabase
+      .channel('payments-changes')
+      .on(
+        'postgres_changes',
+        { event: 'UPDATE', schema: 'public', table: 'payments' },
+        (payload) => {
+          setPayments(prev =>
+            prev.map(p => p.id === payload.new.id ? payload.new : p)
+          );
+        }
+      )
+      .subscribe();
+
+    return () => supabase.removeChannel(channel);
   }, [])
 
   async function fetchCustomers() {
