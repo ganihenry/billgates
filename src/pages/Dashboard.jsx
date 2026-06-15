@@ -168,84 +168,87 @@ export default function Dashboard({ onLogout, onNavigate }) {
                 </tr>
               </thead>
               <tbody>
-                {customers.map(c => (
-                  <tr key={c.id} style={s.tr}
-                    onMouseEnter={e => e.currentTarget.style.background = 'rgba(255,255,255,0.02)'}
-                    onMouseLeave={e => e.currentTarget.style.background = 'transparent'}
-                  >
-                    <td style={s.td}>
-                      <div style={{ fontWeight: 600 }}>{c.name}</div>
-                      <div style={{ fontSize: 12, color: '#6B7280', marginTop: 2 }}>{c.contact_name}</div>
-                    </td>
-                    <td style={{ ...s.td, color: '#9CA3AF', fontSize: 13 }}>{c.contact_phone}</td>
-                    <td style={s.td}>
-                      <span style={{ fontFamily: 'Syne, sans-serif', fontWeight: 600 }}>
-                        ${Number(c.monthly_fee).toLocaleString()}
-                      </span>
-                    </td>
-                    <td style={{ ...s.td, color: '#9CA3AF', fontSize: 13 }}>Day {c.payment_day}</td>
-                    <td style={s.td}>
-                      {(() => {
-                        const payment = getPayment(c.id)
-                        if (!payment) return <span style={s.badgeUnpaid}>Unpaid</span>
-                        return (
-                          <select
-                            value={payment.status}
-                            onChange={e => handleStatusChange(payment, e.target.value)}
-                            style={{
-                              ...s.statusSelect,
-                              ...(payment.status === 'paid' ? s.selectPaid
-                                : payment.status === 'overdue' ? s.selectOverdue
-                                  : s.selectUnpaid)
-                            }}
-                          >
-                            <option value="unpaid">Unpaid</option>
-                            <option value="paid">Paid</option>
-                            <option value="overdue">Overdue</option>
-                          </select>
-                        )
-                      })()}
-                    </td>
-                    <td style={s.td}>
-                      <div style={{ display: 'flex', gap: 6 }}>
-                        <button style={s.btnEdit}
-                          onMouseEnter={e => { e.target.style.color = '#3B82F6'; e.target.style.borderColor = 'rgba(59,130,246,0.3)'; e.target.style.background = 'rgba(59,130,246,0.08)' }}
-                          onMouseLeave={e => { e.target.style.color = '#9CA3AF'; e.target.style.borderColor = 'rgba(255,255,255,0.07)'; e.target.style.background = '#1a1e2a' }}
-                          onClick={() => setEditingCustomer(c)}>Edit</button>
-                        <button style={s.btnDelete}
-                          onMouseEnter={e => { e.target.style.color = '#F87171'; e.target.style.borderColor = 'rgba(248,113,113,0.2)'; e.target.style.background = 'rgba(248,113,113,0.08)' }}
-                          onMouseLeave={e => { e.target.style.color = '#6B7280'; e.target.style.borderColor = 'transparent'; e.target.style.background = 'transparent' }}
-                          onClick={() => deleteCustomer(c.id)}>Delete</button>
-                        <button style={s.btnRemind}
-                          onMouseEnter={e => { e.target.style.color = '#6EE7B7'; e.target.style.borderColor = 'rgba(110,231,183,0.3)'; e.target.style.background = 'rgba(110,231,183,0.08)' }}
-                          onMouseLeave={e => { e.target.style.color = '#9CA3AF'; e.target.style.borderColor = 'rgba(255,255,255,0.07)'; e.target.style.background = '#1a1e2a' }}
-                          onClick={() => handleSendReminder(c)}>Remind</button>
-                        {(payment?.status === 'unpaid' || payment?.status === 'overdue') && (
-                          <button
-                            style={s.btnRemind}
-                            onMouseEnter={e => { e.target.style.color = '#818CF8'; e.target.style.borderColor = 'rgba(129,140,248,0.3)'; e.target.style.background = 'rgba(129,140,248,0.08)' }}
+                {customers.map(c => {
+                  const payment = getPayment(c.id)
+                  return (
+                    <tr key={c.id} style={s.tr}
+                      onMouseEnter={e => e.currentTarget.style.background = 'rgba(255,255,255,0.02)'}
+                      onMouseLeave={e => e.currentTarget.style.background = 'transparent'}
+                    >
+                      <td style={s.td}>
+                        <div style={{ fontWeight: 600 }}>{c.name}</div>
+                        <div style={{ fontSize: 12, color: '#6B7280', marginTop: 2 }}>{c.contact_name}</div>
+                      </td>
+                      <td style={{ ...s.td, color: '#9CA3AF', fontSize: 13 }}>{c.contact_phone}</td>
+                      <td style={s.td}>
+                        <span style={{ fontFamily: 'Syne, sans-serif', fontWeight: 600 }}>
+                          ${Number(c.monthly_fee).toLocaleString()}
+                        </span>
+                      </td>
+                      <td style={{ ...s.td, color: '#9CA3AF', fontSize: 13 }}>Day {c.payment_day}</td>
+                      <td style={s.td}>
+                        {(() => {
+                          const payment = getPayment(c.id)
+                          if (!payment) return <span style={s.badgeUnpaid}>Unpaid</span>
+                          return (
+                            <select
+                              value={payment.status}
+                              onChange={e => handleStatusChange(payment, e.target.value)}
+                              style={{
+                                ...s.statusSelect,
+                                ...(payment.status === 'paid' ? s.selectPaid
+                                  : payment.status === 'overdue' ? s.selectOverdue
+                                    : s.selectUnpaid)
+                              }}
+                            >
+                              <option value="unpaid">Unpaid</option>
+                              <option value="paid">Paid</option>
+                              <option value="overdue">Overdue</option>
+                            </select>
+                          )
+                        })()}
+                      </td>
+                      <td style={s.td}>
+                        <div style={{ display: 'flex', gap: 6 }}>
+                          <button style={s.btnEdit}
+                            onMouseEnter={e => { e.target.style.color = '#3B82F6'; e.target.style.borderColor = 'rgba(59,130,246,0.3)'; e.target.style.background = 'rgba(59,130,246,0.08)' }}
                             onMouseLeave={e => { e.target.style.color = '#9CA3AF'; e.target.style.borderColor = 'rgba(255,255,255,0.07)'; e.target.style.background = '#1a1e2a' }}
-                            onClick={async () => {
-                              try {
-                                const url = await createPaymentLink(
-                                  payment.id,
-                                  c.id,
-                                  c.name,
-                                  c.monthly_fee
-                                );
-                                await navigator.clipboard.writeText(url);
-                                alert('Payment link copied! Paste it into WhatsApp.');
-                              } catch (err) {
-                                alert('Error generating link: ' + err.message);
-                              }
-                            }}>
-                            💳 PayNow
-                          </button>
-                        )}
-                      </div>
-                    </td>
-                  </tr>
-                ))}
+                            onClick={() => setEditingCustomer(c)}>Edit</button>
+                          <button style={s.btnDelete}
+                            onMouseEnter={e => { e.target.style.color = '#F87171'; e.target.style.borderColor = 'rgba(248,113,113,0.2)'; e.target.style.background = 'rgba(248,113,113,0.08)' }}
+                            onMouseLeave={e => { e.target.style.color = '#6B7280'; e.target.style.borderColor = 'transparent'; e.target.style.background = 'transparent' }}
+                            onClick={() => deleteCustomer(c.id)}>Delete</button>
+                          <button style={s.btnRemind}
+                            onMouseEnter={e => { e.target.style.color = '#6EE7B7'; e.target.style.borderColor = 'rgba(110,231,183,0.3)'; e.target.style.background = 'rgba(110,231,183,0.08)' }}
+                            onMouseLeave={e => { e.target.style.color = '#9CA3AF'; e.target.style.borderColor = 'rgba(255,255,255,0.07)'; e.target.style.background = '#1a1e2a' }}
+                            onClick={() => handleSendReminder(c)}>Remind</button>
+                          {(payment?.status === 'unpaid' || payment?.status === 'overdue') && (
+                            <button
+                              style={s.btnRemind}
+                              onMouseEnter={e => { e.target.style.color = '#818CF8'; e.target.style.borderColor = 'rgba(129,140,248,0.3)'; e.target.style.background = 'rgba(129,140,248,0.08)' }}
+                              onMouseLeave={e => { e.target.style.color = '#9CA3AF'; e.target.style.borderColor = 'rgba(255,255,255,0.07)'; e.target.style.background = '#1a1e2a' }}
+                              onClick={async () => {
+                                try {
+                                  const url = await createPaymentLink(
+                                    payment.id,
+                                    c.id,
+                                    c.name,
+                                    c.monthly_fee
+                                  );
+                                  await navigator.clipboard.writeText(url);
+                                  alert('Payment link copied! Paste it into WhatsApp.');
+                                } catch (err) {
+                                  alert('Error generating link: ' + err.message);
+                                }
+                              }}>
+                              💳 PayNow
+                            </button>
+                          )}
+                        </div>
+                      </td>
+                    </tr>
+                  )
+                })}
               </tbody>
             </table>
           )}
