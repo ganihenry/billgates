@@ -74,7 +74,52 @@ export default function Reminders({ onLogout, onNavigate }) {
           <div style={s.breadcrumb}>Reminders</div>
           <div style={s.pageTitle}>Reminder Centre</div>
         </div>
-        <p style={{ color: '#9CA3AF' }}>Coming soon...</p>
+        {[
+          { key: 'pre_due', label: '📅 Pre-Due Reminder', desc: 'Sent automatically X days before payment is due' },
+          { key: 'overdue', label: '⚠️ Overdue Reminder', desc: 'Sent when payment day has passed and status is overdue' },
+          { key: 'payment_confirmed', label: '✅ Payment Confirmed', desc: 'Sent when payment is marked as paid' },
+        ].map(({ key, label, desc }) => (
+          <div key={key} style={s.section}>
+            <div style={s.sectionHeader}>
+              <div>
+                <div style={s.sectionTitle}>{label}</div>
+                <div style={{ fontSize: 12, color: '#6B7280', marginTop: 4 }}>{desc}</div>
+              </div>
+            </div>
+            <div style={{ padding: '24px', display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 24 }}>
+              <div>
+                <div style={s.fieldLabel}>Message Template</div>
+                <div style={{ fontSize: 11, color: '#6B7280', marginBottom: 8 }}>
+                  Variables: <code style={{ color: '#818CF8' }}>{'{name}'}</code>{' '}
+                  <code style={{ color: '#818CF8' }}>{'{amount}'}</code>{' '}
+                  <code style={{ color: '#818CF8' }}>{'{due_date}'}</code>
+                </div>
+                <textarea
+                  style={s.textarea}
+                  value={templates[key] || ''}
+                  onChange={e => setTemplates(prev => ({ ...prev, [key]: e.target.value }))}
+                  rows={5}
+                />
+                <button
+                  style={{ ...s.saveBtn, opacity: saving ? 0.6 : 1 }}
+                  onClick={() => saveTemplate(key)}
+                  disabled={saving}
+                >
+                  {saving ? 'Saving...' : 'Save Template'}
+                </button>
+              </div>
+              <div>
+                <div style={s.fieldLabel}>Live Preview</div>
+                <div style={{ fontSize: 11, color: '#6B7280', marginBottom: 8 }}>
+                  Sample: John Tan, $2,000, due 15 Jun 2026
+                </div>
+                <div style={s.preview}>
+                  {previewMessage(key) || <span style={{ color: '#4B5563' }}>Start typing to see preview...</span>}
+                </div>
+              </div>
+            </div>
+          </div>
+        ))}
       </main>
     </div>
   )
