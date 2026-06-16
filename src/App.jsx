@@ -3,6 +3,7 @@ import { supabase } from './lib/supabaseClient'
 import Dashboard from './pages/Dashboard'
 import PaymentHistory from './pages/PaymentHistory'
 import Reports from './pages/Reports'
+import Reminders from './pages/Reminders'
 
 export default function App() {
   const [email, setEmail] = useState('')
@@ -54,6 +55,9 @@ export default function App() {
         )}
         {page === 'reports' && (
           <Reports onNavigate={setPage} />
+        )}
+        {page === 'reminders' && (
+          <Reminders onLogout={handleLogout} onNavigate={setPage} />
         )}
       </div>
     )
