@@ -87,6 +87,8 @@ export default function Dashboard({ onLogout, onNavigate }) {
               style={{ ...s.navItem, ...(label === 'Dashboard' ? s.navActive : {}) }}
               onClick={() => {
                 if (label === 'Payments') onNavigate('history')
+                if (label === 'Reminders') onNavigate('reminders')
+                if (label === 'Reports') onNavigate('reports')
               }}
             >
               <span style={{ width: 20, textAlign: 'center' }}>{icon}</span> {label}
