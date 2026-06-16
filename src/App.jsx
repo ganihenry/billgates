@@ -54,7 +54,7 @@ export default function App() {
           <PaymentHistory onBack={() => setPage('dashboard')} onNavigate={setPage} />
         )}
         {page === 'reports' && (
-          <Reports onNavigate={setPage} />
+          <Reports onLogout={handleLogout} onNavigate={setPage} />
         )}
         {page === 'reminders' && (
           <Reminders onLogout={handleLogout} onNavigate={setPage} />
