@@ -2,6 +2,39 @@ import { useEffect, useState } from 'react'
 import { supabase } from '../lib/supabaseClient'
 
 export default function Reminders({ onLogout, onNavigate }) {
+  const [templates, setTemplates] = useState({ pre_due: '', overdue: '', payment_confirmed: '' })
+  const [saving, setSaving] = useState(false)
+
+  useEffect(() => {
+    fetchTemplates()
+  }, [])
+
+  async function fetchTemplates() {
+    const { data } = await supabase.from('reminder_templates').select('*')
+    if (data) {
+      const map = {}
+      data.forEach(t => map[t.type] = t.message)
+      setTemplates(map)
+    }
+  }
+
+  async function saveTemplate(type) {
+    setSaving(true)
+    await supabase
+      .from('reminder_templates')
+      .update({ message: templates[type], updated_at: new Date().toISOString() })
+      .eq('type', type)
+    setSaving(false)
+    alert('✅ Template saved!')
+  }
+
+  function previewMessage(type) {
+    return (templates[type] || '')
+      .replace(/{name}/g, 'John Tan')
+      .replace(/{amount}/g, '2,000')
+      .replace(/{due_date}/g, '15 Jun 2026')
+  }
+
   return (
     <div style={{ display: 'flex', minHeight: '100vh' }}>
       <aside style={s.sidebar}>
