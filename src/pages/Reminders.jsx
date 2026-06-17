@@ -4,6 +4,9 @@ import { supabase } from '../lib/supabaseClient'
 export default function Reminders({ onLogout, onNavigate }) {
   const [templates, setTemplates] = useState({ pre_due: '', overdue: '', payment_confirmed: '' })
   const [saving, setSaving] = useState(false)
+  const [customers, setCustomers] = useState([])
+  const [payments, setPayments] = useState([])
+  const [blasting, setBlasting] = useState(false)
 
   useEffect(() => {
     fetchTemplates()
