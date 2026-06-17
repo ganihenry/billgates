@@ -21,6 +21,15 @@ export default function Reminders({ onLogout, onNavigate }) {
     }
   }
 
+  async function fetchCustomersAndPayments() {
+    const { data: c } = await supabase.from('customers').select('*')
+    if (c) setCustomers(c)
+    const today = new Date()
+    const month = `${today.getFullYear()}-${String(today.getMonth() + 1).padStart(2, '0')}`
+    const { data: p } = await supabase.from('payments').select('*').eq('month', month)
+    if (p) setPayments(p)
+  }
+
   async function saveTemplate(type) {
     setSaving(true)
     await supabase
