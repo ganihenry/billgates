@@ -10,6 +10,7 @@ export default function Reminders({ onLogout, onNavigate }) {
 
   useEffect(() => {
     fetchTemplates()
+    fetchCustomersAndPayments()
   }, [])
 
   async function fetchTemplates() {
