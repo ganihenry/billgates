@@ -213,6 +213,16 @@ export default function Reminders({ onLogout, onNavigate }) {
         <div style={s.section}>
           <div style={s.sectionHeader}>
             <div style={s.sectionTitle}>📋 Reminder History</div>
+            <button
+              style={{ ...s.saveBtn, background: 'transparent', border: '1px solid rgba(248,113,113,0.3)', color: '#F87171' }}
+              onClick={async () => {
+                if (!window.confirm('Clear all reminder history?')) return
+                await supabase.from('reminder_logs').delete().neq('id', 0)
+                fetchLogs()
+              }}
+            >
+              🗑 Clear History
+            </button>
           </div>
           {logs.length === 0 ? (
             <div style={{ padding: '32px 24px', color: '#6B7280', textAlign: 'center' }}>
