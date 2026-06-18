@@ -74,17 +74,19 @@ export default function Reminders({ onLogout, onNavigate }) {
       const type = payment?.status === 'overdue' ? 'overdue' : 'pre_due'
       const message = applyTemplate(templates[type] || '', customer)
 
-      const result = await sendWhatsAppReminder(customer, message)
-      const status = result.success ? 'sent' : 'failed'
-      if (result.success) successCount++
+      console.log('Sending to:', customer.name, '| message:', message)
 
-      await supabase.from('reminder_logs').insert({
+      const result = await sendWhatsAppReminder(customer, message)
+      console.log('Send result:', result)
+
+      const { data, error } = await supabase.from('reminder_logs').insert({
         customer_id: customer.id,
         customer_name: customer.name,
         type: 'blast',
         message,
-        status,
+        status: result.success ? 'sent' : 'failed',
       })
+      console.log('Log insert result:', data, 'error:', error)
     }
 
     await fetchLogs()
