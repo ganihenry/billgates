@@ -1,3 +1,4 @@
+import { sendWhatsAppReminder } from '../lib/paymentUtils'
 import { useEffect, useState } from 'react'
 import { supabase } from '../lib/supabaseClient'
 
@@ -40,7 +41,13 @@ export default function Reminders({ onLogout, onNavigate }) {
     setSaving(false)
     alert('✅ Template saved!')
   }
-
+  function applyTemplate(message, customer) {
+    const due_date = `Day ${customer.payment_day}`
+    return message
+      .replace(/{name}/g, customer.contact_name)
+      .replace(/{amount}/g, Number(customer.monthly_fee).toLocaleString())
+      .replace(/{due_date}/g, due_date)
+  }
   function previewMessage(type) {
     return (templates[type] || '')
       .replace(/{name}/g, 'John Tan')
