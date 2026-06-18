@@ -8,6 +8,17 @@ export default function Reports({ onNavigate }) {
 
   useEffect(() => {
     fetchAllPayments()
+
+    const channel = supabase
+      .channel('reports-changes')
+      .on(
+        'postgres_changes',
+        { event: 'UPDATE', schema: 'public', table: 'payments' },
+        () => fetchAllPayments()
+      )
+      .subscribe()
+
+    return () => supabase.removeChannel(channel)
   }, [])
 
   async function fetchAllPayments() {
