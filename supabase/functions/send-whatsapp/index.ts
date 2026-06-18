@@ -11,14 +11,12 @@ serve(async (req: Request) => {
   }
 
   try {
-    const { to, customerName, amount, paymentDay } = await req.json()
-
+    const { to, customerName, amount, paymentDay, customMessage } = await req.json()
     const accountSid = (globalThis as any).Deno.env.get('TWILIO_ACCOUNT_SID')
     const authToken = (globalThis as any).Deno.env.get('TWILIO_AUTH_TOKEN')
     const fromNumber = (globalThis as any).Deno.env.get('TWILIO_WHATSAPP_FROM')
 
-    const message = `Hi ${customerName}, this is a reminder that your payment of $${amount} is due on Day ${paymentDay} of this month. Please make payment at your earliest convenience. Thank you!`
-
+    const message = customMessage || `Hi ${customerName}, this is a reminder that your payment of $${amount} is due on Day ${paymentDay} of this month. Please make payment at your earliest convenience. Thank you!`
     const response = await fetch(
       `https://api.twilio.com/2010-04-01/Accounts/${accountSid}/Messages.json`,
       {
