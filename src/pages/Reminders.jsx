@@ -69,6 +69,19 @@ export default function Reminders({ onLogout, onNavigate }) {
       .replace(/{amount}/g, Number(customer.monthly_fee).toLocaleString())
       .replace(/{due_date}/g, due_date)
       .replace(/{payment_link}/g, paymentLink)
+
+      try {
+      console.log('Creating payment link for:', payment?.id, customer.id, customer.name, customer.monthly_fee)
+      paymentLink = await createPaymentLink(
+        payment?.id,
+        customer.id,
+        customer.name,
+        customer.monthly_fee
+      )
+      console.log('Payment link created:', paymentLink)
+    } catch (err) {
+      console.error('Failed to generate payment link:', err)
+    }
   }
   async function handleBlastReminders() {
     const unpaid = customers.filter(c => {

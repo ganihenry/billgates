@@ -4,7 +4,6 @@ import { supabase } from '../lib/supabaseClient'
 import EditCustomerForm from '../components/EditCustomerForm'
 import AddCustomerForm from '../components/AddCustomerForm'
 import { getPaymentsForMonth, updatePaymentStatus, sendWhatsAppReminder } from '../lib/paymentUtils'
-import { createPaymentLink } from '../lib/stripeUtils'
 
 export default function Dashboard({ onLogout, onNavigate }) {
   const [customers, setCustomers] = useState([])
