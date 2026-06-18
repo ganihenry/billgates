@@ -71,14 +71,12 @@ export default function Reminders({ onLogout, onNavigate }) {
       .replace(/{payment_link}/g, paymentLink)
 
       try {
-      console.log('Creating payment link for:', payment?.id, customer.id, customer.name, customer.monthly_fee)
       paymentLink = await createPaymentLink(
         payment?.id,
         customer.id,
         customer.name,
         customer.monthly_fee
       )
-      console.log('Payment link created:', paymentLink)
     } catch (err) {
       console.error('Failed to generate payment link:', err)
     }
@@ -99,10 +97,8 @@ export default function Reminders({ onLogout, onNavigate }) {
       const payment = payments.find(p => p.customer_id === customer.id)
       const type = payment?.status === 'overdue' ? 'overdue' : 'pre_due'
       const message = await applyTemplate(templates[type] || '', customer, payment)
-      console.log('Sending to:', customer.name, '| message:', message)
 
       const result = await sendWhatsAppReminder(customer, message)
-      console.log('Send result:', result)
 
       const { data, error } = await supabase.from('reminder_logs').insert({
         customer_id: customer.id,
@@ -111,7 +107,6 @@ export default function Reminders({ onLogout, onNavigate }) {
         message,
         status: result.success ? 'sent' : 'failed',
       })
-      console.log('Log insert result:', data, 'error:', error)
     }
 
     await fetchLogs()
