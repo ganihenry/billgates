@@ -9,6 +9,17 @@ export default function PaymentHistory({ onBack, onNavigate }) {
 
   useEffect(() => {
     fetchHistory()
+
+    const channel = supabase
+      .channel('payment-history-changes')
+      .on(
+        'postgres_changes',
+        { event: 'UPDATE', schema: 'public', table: 'payments' },
+        () => fetchHistory()
+      )
+      .subscribe()
+
+    return () => supabase.removeChannel(channel)
   }, [])
 
   async function fetchHistory() {
