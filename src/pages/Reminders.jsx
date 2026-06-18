@@ -1,6 +1,7 @@
 import { sendWhatsAppReminder } from '../lib/paymentUtils'
 import { useEffect, useState } from 'react'
 import { supabase } from '../lib/supabaseClient'
+import { createPaymentLink } from '../lib/stripeUtils'
 
 export default function Reminders({ onLogout, onNavigate }) {
   const [templates, setTemplates] = useState({ pre_due: '', overdue: '', payment_confirmed: '' })
@@ -50,12 +51,24 @@ export default function Reminders({ onLogout, onNavigate }) {
     setSaving(false)
     alert('✅ Template saved!')
   }
-  function applyTemplate(message, customer) {
+  async function applyTemplate(message, customer, payment) {
     const due_date = `Day ${customer.payment_day}`
+    let paymentLink = ''
+    try {
+      paymentLink = await createPaymentLink(
+        payment?.id,
+        customer.id,
+        customer.name,
+        customer.monthly_fee
+      )
+    } catch (err) {
+      console.error('Failed to generate payment link:', err)
+    }
     return message
       .replace(/{name}/g, customer.contact_name)
       .replace(/{amount}/g, Number(customer.monthly_fee).toLocaleString())
       .replace(/{due_date}/g, due_date)
+      .replace(/{payment_link}/g, paymentLink)
   }
   async function handleBlastReminders() {
     const unpaid = customers.filter(c => {
@@ -72,8 +85,7 @@ export default function Reminders({ onLogout, onNavigate }) {
     for (const customer of unpaid) {
       const payment = payments.find(p => p.customer_id === customer.id)
       const type = payment?.status === 'overdue' ? 'overdue' : 'pre_due'
-      const message = applyTemplate(templates[type] || '', customer)
-
+      const message = await applyTemplate(templates[type] || '', customer, payment)
       console.log('Sending to:', customer.name, '| message:', message)
 
       const result = await sendWhatsAppReminder(customer, message)
