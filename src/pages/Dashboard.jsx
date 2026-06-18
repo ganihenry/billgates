@@ -49,7 +49,17 @@ export default function Dashboard({ onLogout, onNavigate }) {
   }
 
   async function handleSendReminder(customer) {
+    const payment = getPayment(customer.id)
     const result = await sendWhatsAppReminder(customer)
+
+    await supabase.from('reminder_logs').insert({
+      customer_id: customer.id,
+      customer_name: customer.name,
+      type: 'manual',
+      message: `Manual reminder sent to ${customer.contact_name}`,
+      status: result.success ? 'sent' : 'failed',
+    })
+
     if (result.success) {
       alert(`✅ Reminder sent to ${customer.contact_name}!`)
     } else {
