@@ -43,9 +43,20 @@ export default function Dashboard({ onLogout, onNavigate }) {
   }
 
   async function deleteCustomer(id) {
+    if (!window.confirm('Are you sure you want to delete this customer? All payment records will also be deleted.')) return
+
+    // Delete related records first
+    await supabase.from('reminder_logs').delete().eq('customer_id', id)
+    await supabase.from('payments').delete().eq('customer_id', id)
+
     const { error } = await supabase.from('customers').delete().eq('id', id)
-    if (error) console.error(error)
-    else fetchCustomers()
+    if (error) {
+      console.error(error)
+      alert('❌ Failed to delete customer: ' + error.message)
+    } else {
+      fetchCustomers()
+      fetchPayments()
+    }
   }
 
   async function handleSendReminder(customer) {
