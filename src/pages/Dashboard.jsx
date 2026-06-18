@@ -259,10 +259,16 @@ export default function Dashboard({ onLogout, onNavigate }) {
                             onMouseEnter={e => { e.target.style.color = '#F87171'; e.target.style.borderColor = 'rgba(248,113,113,0.2)'; e.target.style.background = 'rgba(248,113,113,0.08)' }}
                             onMouseLeave={e => { e.target.style.color = '#6B7280'; e.target.style.borderColor = 'transparent'; e.target.style.background = 'transparent' }}
                             onClick={() => deleteCustomer(c.id)}>Delete</button>
-                          <button style={s.btnRemind}
-                            onMouseEnter={e => { e.target.style.color = '#6EE7B7'; e.target.style.borderColor = 'rgba(110,231,183,0.3)'; e.target.style.background = 'rgba(110,231,183,0.08)' }}
+                          <button style={{
+                            ...s.btnRemind,
+                            ...(payment?.status === 'paid' ? { opacity: 0.3, cursor: 'not-allowed' } : {})
+                          }}
+                            onMouseEnter={e => { if (payment?.status !== 'paid') { e.target.style.color = '#6EE7B7'; e.target.style.borderColor = 'rgba(110,231,183,0.3)'; e.target.style.background = 'rgba(110,231,183,0.08)' } }}
                             onMouseLeave={e => { e.target.style.color = '#9CA3AF'; e.target.style.borderColor = 'rgba(255,255,255,0.07)'; e.target.style.background = '#1a1e2a' }}
-                            onClick={() => handleSendReminder(c)}>Remind</button>
+                            onClick={() => payment?.status !== 'paid' && handleSendReminder(c)}
+                            disabled={payment?.status === 'paid'}>
+                            Remind
+                          </button>
                           {(payment?.status === 'unpaid' || payment?.status === 'overdue') && (
                             <button
                               style={s.btnRemind}
