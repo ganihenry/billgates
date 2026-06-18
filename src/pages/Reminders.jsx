@@ -212,7 +212,7 @@ export default function Reminders({ onLogout, onNavigate }) {
         ))}
         <div style={s.section}>
           <div style={s.sectionHeader}>
-            <div style={s.sectionTitle}>📋 Reminder History</div>
+            <div style={s.sectionTitle}>📋 Message History</div>
             <button
               style={{ ...s.saveBtn, background: 'transparent', border: '1px solid rgba(248,113,113,0.3)', color: '#F87171' }}
               onClick={async () => {
