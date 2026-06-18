@@ -116,6 +116,30 @@ export default function Reminders({ onLogout, onNavigate }) {
           <div style={s.breadcrumb}>Reminders</div>
           <div style={s.pageTitle}>Reminder Centre</div>
         </div>
+        <div style={s.section}>
+          <div style={s.sectionHeader}>
+            <div style={s.sectionTitle}>🚀 Send to All Unpaid</div>
+          </div>
+          <div style={{ padding: '24px' }}>
+            <p style={{ color: '#9CA3AF', fontSize: 14, marginBottom: 20 }}>
+              Send a WhatsApp reminder to all{' '}
+              <strong style={{ color: '#F87171' }}>
+                {customers.filter(c => {
+                  const p = payments.find(p => p.customer_id === c.id)
+                  return !p || p.status === 'unpaid' || p.status === 'overdue'
+                }).length} unpaid / overdue
+              </strong>{' '}
+              customers at once. Uses your saved templates below.
+            </p>
+            <button
+              style={{ ...s.blastBtn, opacity: blasting ? 0.6 : 1 }}
+              onClick={handleBlastReminders}
+              disabled={blasting}
+            >
+              {blasting ? '⏳ Sending...' : `🔔 Remind All Unpaid`}
+            </button>
+          </div>
+        </div>
         {[
           { key: 'pre_due', label: '📅 Pre-Due Reminder', desc: 'Sent automatically X days before payment is due' },
           { key: 'overdue', label: '⚠️ Overdue Reminder', desc: 'Sent when payment day has passed and status is overdue' },
