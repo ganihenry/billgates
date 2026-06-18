@@ -4,6 +4,7 @@ import { supabase } from '../lib/supabaseClient'
 import EditCustomerForm from '../components/EditCustomerForm'
 import AddCustomerForm from '../components/AddCustomerForm'
 import { getPaymentsForMonth, updatePaymentStatus, sendWhatsAppReminder } from '../lib/paymentUtils'
+import { createPaymentLink } from '../lib/stripeUtils'
 
 export default function Dashboard({ onLogout, onNavigate }) {
   const [customers, setCustomers] = useState([])
@@ -46,11 +47,23 @@ export default function Dashboard({ onLogout, onNavigate }) {
     return {}
   }
 
-  function applyTemplate(message, customer) {
+  async function applyTemplate(message, customer, payment) {
+    let paymentLink = ''
+    try {
+      paymentLink = await createPaymentLink(
+        payment?.id,
+        customer.id,
+        customer.name,
+        customer.monthly_fee
+      )
+    } catch (err) {
+      console.error('Failed to generate payment link:', err)
+    }
     return message
       .replace(/{name}/g, customer.contact_name)
       .replace(/{amount}/g, Number(customer.monthly_fee).toLocaleString())
       .replace(/{due_date}/g, `Day ${customer.payment_day}`)
+      .replace(/{payment_link}/g, paymentLink)
   }
   async function fetchPayments() {
     const data = await getPaymentsForMonth()
@@ -78,7 +91,7 @@ export default function Dashboard({ onLogout, onNavigate }) {
     const payment = getPayment(customer.id)
     const templates = await fetchTemplates()
     const type = payment?.status === 'overdue' ? 'overdue' : 'pre_due'
-    const message = applyTemplate(templates[type] || '', customer)
+    const message = await applyTemplate(templates[type] || '', customer, payment)
     const result = await sendWhatsAppReminder(customer, message)
 
     await supabase.from('reminder_logs').insert({
