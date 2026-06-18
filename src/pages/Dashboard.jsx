@@ -36,7 +36,22 @@ export default function Dashboard({ onLogout, onNavigate }) {
     else setCustomers(data)
     setLoading(false)
   }
+  async function fetchTemplates() {
+    const { data } = await supabase.from('reminder_templates').select('*')
+    if (data) {
+      const map = {}
+      data.forEach(t => map[t.type] = t.message)
+      return map
+    }
+    return {}
+  }
 
+  function applyTemplate(message, customer) {
+    return message
+      .replace(/{name}/g, customer.contact_name)
+      .replace(/{amount}/g, Number(customer.monthly_fee).toLocaleString())
+      .replace(/{due_date}/g, `Day ${customer.payment_day}`)
+  }
   async function fetchPayments() {
     const data = await getPaymentsForMonth()
     setPayments(data)
@@ -61,7 +76,10 @@ export default function Dashboard({ onLogout, onNavigate }) {
 
   async function handleSendReminder(customer) {
     const payment = getPayment(customer.id)
-    const result = await sendWhatsAppReminder(customer)
+    const templates = await fetchTemplates()
+    const type = payment?.status === 'overdue' ? 'overdue' : 'pre_due'
+    const message = applyTemplate(templates[type] || '', customer)
+    const result = await sendWhatsAppReminder(customer, message)
 
     await supabase.from('reminder_logs').insert({
       customer_id: customer.id,
