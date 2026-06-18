@@ -48,6 +48,28 @@ export default function Reminders({ onLogout, onNavigate }) {
       .replace(/{amount}/g, Number(customer.monthly_fee).toLocaleString())
       .replace(/{due_date}/g, due_date)
   }
+  async function handleBlastReminders() {
+    const unpaid = customers.filter(c => {
+      const p = payments.find(p => p.customer_id === c.id)
+      return !p || p.status === 'unpaid' || p.status === 'overdue'
+    })
+
+    if (unpaid.length === 0) return alert('No unpaid customers to remind!')
+    if (!window.confirm(`Send reminders to ${unpaid.length} unpaid customer(s)?`)) return
+
+    setBlasting(true)
+    let successCount = 0
+
+    for (const customer of unpaid) {
+      const payment = payments.find(p => p.customer_id === customer.id)
+      const type = payment?.status === 'overdue' ? 'overdue' : 'pre_due'
+      const message = applyTemplate(templates[type] || '', customer)
+
+      const result = await sendWhatsAppReminder(customer, message)
+      const status = result.success ? 'sent' : 'failed'
+    }
+  }
+
   function previewMessage(type) {
     return (templates[type] || '')
       .replace(/{name}/g, 'John Tan')
