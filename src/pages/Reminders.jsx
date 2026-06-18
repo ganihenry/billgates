@@ -8,10 +8,12 @@ export default function Reminders({ onLogout, onNavigate }) {
   const [customers, setCustomers] = useState([])
   const [payments, setPayments] = useState([])
   const [blasting, setBlasting] = useState(false)
+  const [logs, setLogs] = useState([])
 
   useEffect(() => {
     fetchTemplates()
     fetchCustomersAndPayments()
+    fetchLogs()
   }, [])
 
   async function fetchTemplates() {
@@ -22,7 +24,14 @@ export default function Reminders({ onLogout, onNavigate }) {
       setTemplates(map)
     }
   }
-
+  async function fetchLogs() {
+    const { data } = await supabase
+      .from('reminder_logs')
+      .select('*')
+      .order('sent_at', { ascending: false })
+      .limit(50)
+    if (data) setLogs(data)
+  }
   async function fetchCustomersAndPayments() {
     const { data: c } = await supabase.from('customers').select('*')
     if (c) setCustomers(c)
@@ -57,7 +66,8 @@ export default function Reminders({ onLogout, onNavigate }) {
     if (unpaid.length === 0) return alert('No unpaid customers to remind!')
     if (!window.confirm(`Send reminders to ${unpaid.length} unpaid customer(s)?`)) return
 
-    setBlasting(true)
+    await fetchLogs()
+    setBlasting(false)
     let successCount = 0
 
     for (const customer of unpaid) {
@@ -186,6 +196,57 @@ export default function Reminders({ onLogout, onNavigate }) {
             </div>
           </div>
         ))}
+        <div style={s.section}>
+          <div style={s.sectionHeader}>
+            <div style={s.sectionTitle}>📋 Reminder History</div>
+          </div>
+          {logs.length === 0 ? (
+            <div style={{ padding: '32px 24px', color: '#6B7280', textAlign: 'center' }}>
+              No reminders sent yet
+            </div>
+          ) : (
+            <table style={{ width: '100%', borderCollapse: 'collapse' }}>
+              <thead>
+                <tr>
+                  {['Customer', 'Type', 'Message', 'Sent At', 'Status'].map(h => (
+                    <th key={h} style={s.th}>{h}</th>
+                  ))}
+                </tr>
+              </thead>
+              <tbody>
+                {logs.map(log => (
+                  <tr key={log.id} style={s.tr}>
+                    <td style={{ ...s.td, fontWeight: 600 }}>{log.customer_name}</td>
+                    <td style={s.td}>
+                      <span style={{
+                        ...s.typeBadge,
+                        background: log.type === 'overdue' ? 'rgba(245,158,11,0.1)' : log.type === 'blast' ? 'rgba(129,140,248,0.1)' : 'rgba(110,231,183,0.1)',
+                        color: log.type === 'overdue' ? '#F59E0B' : log.type === 'blast' ? '#818CF8' : '#6EE7B7',
+                        borderColor: log.type === 'overdue' ? 'rgba(245,158,11,0.2)' : log.type === 'blast' ? 'rgba(129,140,248,0.2)' : 'rgba(110,231,183,0.2)',
+                      }}>
+                        {log.type}
+                      </span>
+                    </td>
+                    <td style={{ ...s.td, color: '#9CA3AF', fontSize: 12, maxWidth: 300 }}>{log.message}</td>
+                    <td style={{ ...s.td, color: '#6B7280', fontSize: 12 }}>
+                      {new Date(log.sent_at).toLocaleString('en-SG')}
+                    </td>
+                    <td style={s.td}>
+                      <span style={{
+                        ...s.typeBadge,
+                        background: log.status === 'sent' ? 'rgba(110,231,183,0.1)' : 'rgba(248,113,113,0.1)',
+                        color: log.status === 'sent' ? '#6EE7B7' : '#F87171',
+                        borderColor: log.status === 'sent' ? 'rgba(110,231,183,0.2)' : 'rgba(248,113,113,0.2)',
+                      }}>
+                        {log.status}
+                      </span>
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          )}
+        </div>
       </main>
     </div>
   )
