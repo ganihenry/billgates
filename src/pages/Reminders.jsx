@@ -66,8 +66,7 @@ export default function Reminders({ onLogout, onNavigate }) {
     if (unpaid.length === 0) return alert('No unpaid customers to remind!')
     if (!window.confirm(`Send reminders to ${unpaid.length} unpaid customer(s)?`)) return
 
-    await fetchLogs()
-    setBlasting(false)
+    setBlasting(true)
     let successCount = 0
 
     for (const customer of unpaid) {
@@ -77,7 +76,20 @@ export default function Reminders({ onLogout, onNavigate }) {
 
       const result = await sendWhatsAppReminder(customer, message)
       const status = result.success ? 'sent' : 'failed'
+      if (result.success) successCount++
+
+      await supabase.from('reminder_logs').insert({
+        customer_id: customer.id,
+        customer_name: customer.name,
+        type: 'blast',
+        message,
+        status,
+      })
     }
+
+    await fetchLogs()
+    setBlasting(false)
+    alert(`✅ Sent reminders to ${successCount} of ${unpaid.length} customers!`)
   }
 
   function previewMessage(type) {
