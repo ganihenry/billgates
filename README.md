@@ -362,20 +362,39 @@ Like the Payments page, this page uses Supabase Realtime so the numbers update t
 
 | Task | Person |
 |---|---|
-| Stripe PayNow — `/api/create-checkout-session` serverless function | Shao Qing |
-| Stripe PayNow — `/api/stripe-webhook` handler | Henry |
-| `stripeUtils.js` frontend helper | Shao Qing |
-| PayNow button on Dashboard | Henry |
-| Supabase Realtime subscriptions — Dashboard, Payments, Reports | Shao Qing |
-| `reminder_templates` and `reminder_logs` Supabase tables | Henry |
-| Reminders page — skeleton, routing, sidebar | Shao Qing |
-| Reminders page — template editor with live preview | Henry |
-| Reminders page — Blast All Unpaid function and UI | Shao Qing |
-| Reminders page — Message History log | Henry |
-| PayNow link auto-generated and embedded in reminder messages | Shao Qing |
-| Foreign key constraint fix and orphaned record cleanup | Henry |
-| Disable Remind button for paid customers | Shao Qing |
+| Install Stripe and add `stripe_session_id` column to payments | Shao Qing |
+| `/api/create-checkout-session` serverless function | Shao Qing |
+| `/api/stripe-webhook` handler to update payment status | Henry |
+| `stripeUtils.js` frontend helper | Henry |
+| PayNow button on Dashboard customer row | Henry |
+| Fix payment lookup scope so PayNow button can access it | Henry |
+| Supabase Realtime subscription on Dashboard | Henry |
+| Add `reminder_days_before` field to Add and Edit Customer forms | Shao Qing |
+| Deploy send-due-reminders edge function | Shao Qing |
+| Add field labels to EditCustomerForm | Shao Qing |
+| Reminders page skeleton and routing | Shao Qing |
+| Wire up Reminders nav link in Dashboard sidebar | Shao Qing |
+| Register Reminders page in App.jsx | Shao Qing |
+| Reminders page — template state, fetch, save and preview functions | Shao Qing |
+| Reminders page — message template UI with live preview | Shao Qing |
+| Reminders page — customer and payment fetch logic | Shao Qing |
+| Pass `customMessage` param to `sendWhatsAppReminder` | Henry |
+| Update edge function to use custom message if provided | Henry |
+| `applyTemplate` helper function | Henry |
+| `handleBlastReminders` function | Henry |
+| Blast All Unpaid button UI | Henry |
+| Reminder history log UI | Henry |
+| Log manual reminders to `reminder_logs` when Remind clicked | Henry |
+| Fix missing log insert and fetchLogs placement in blast | Henry |
+| Clear History button on Reminders page | Henry |
+| Fix Remind button to use correct template based on payment status | Henry |
 | Fix delete customer to cascade through payments and logs | Henry |
+| Disable Remind button when payment status is paid | Henry |
+| Auto-generate PayNow link and include in reminder messages | Henry |
+| Auto-generate PayNow link in Dashboard Remind button | Henry |
+| Supabase Realtime subscription on PaymentHistory page | Shao Qing |
+| Supabase Realtime subscription on Reports page | Shao Qing |
+| Fix Reminders nav link in PaymentHistory and Reports sidebars | Henry |
 
 ---
 
