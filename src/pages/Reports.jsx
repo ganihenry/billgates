@@ -77,6 +77,7 @@ export default function Reports({ onNavigate }) {
               onClick={() => {
                 if (label === 'Dashboard') onNavigate('dashboard')
                 if (label === 'Payments') onNavigate('history')
+                if (label === 'Reminders') onNavigate('reminders')
               }}
             >
               <span style={{ width: 20, textAlign: 'center' }}>{icon}</span> {label}
