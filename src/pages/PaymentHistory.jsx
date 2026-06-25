@@ -79,6 +79,7 @@ export default function PaymentHistory({ onBack, onNavigate }) {
               style={{ ...s.navItem, ...(label === 'Payments' ? s.navActive : {}) }}
               onClick={() => {
                 if (label === 'Dashboard') onBack()
+                if (label === 'Reminders') onNavigate('reminders')
                 if (label === 'Reports') onNavigate('reports')
               }}
             >
@@ -202,8 +203,8 @@ export default function PaymentHistory({ onBack, onNavigate }) {
                     <td style={{ ...s.td, color: '#9CA3AF', fontSize: 13 }}>
                       {payment.paid_at
                         ? new Date(payment.paid_at).toLocaleDateString('en-SG', {
-                            day: 'numeric', month: 'short', year: 'numeric'
-                          })
+                          day: 'numeric', month: 'short', year: 'numeric'
+                        })
                         : '—'}
                     </td>
                   </tr>
