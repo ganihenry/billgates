@@ -8,12 +8,13 @@ import Reminders from './pages/Reminders'
 export default function App() {
   const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
+  const [confirmPassword, setConfirmPassword] = useState('')
   const [user, setUser] = useState(null)
   const [error, setError] = useState('')
   const [loading, setLoading] = useState(false)
   const [showPassword, setShowPassword] = useState(false)
   const [page, setPage] = useState('dashboard')
-  const [authMode, setAuthMode] = useState('login')
+  const [authMode, setAuthMosde] = useState('login')
 
   useEffect(() => {
     supabase.auth.getSession().then(({ data: { session } }) => {
