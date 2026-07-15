@@ -54,3 +54,24 @@ page.drawText(customerName, {
   x: 40, y: height - 148,
   size: 16, font: fontBold, color: rgb(0.94, 0.96, 1),
 })
+
+page.drawText('AMOUNT PAID', {
+  x: 40, y: height - 200,
+  size: 9, font: fontBold, color: grey,
+})
+page.drawText(`SGD $${Number(amount).toLocaleString()}`, {
+  x: 40, y: height - 220,
+  size: 28, font: fontBold, color: green,
+})
+
+page.drawRectangle({
+  x: 40, y: height - 290,
+  width: 80, height: 24,
+  color: rgb(0.11, 0.28, 0.20),
+  borderColor: green,
+  borderWidth: 1,
+})
+page.drawText('PAID', {
+  x: 58, y: height - 282,
+  size: 10, font: fontBold, color: green,
+})
