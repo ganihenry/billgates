@@ -13,6 +13,7 @@ export default function App() {
   const [loading, setLoading] = useState(false)
   const [showPassword, setShowPassword] = useState(false)
   const [page, setPage] = useState('dashboard')
+  const [authMode, setAuthMode] = useState('login')
 
   useEffect(() => {
     supabase.auth.getSession().then(({ data: { session } }) => {
