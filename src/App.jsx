@@ -132,7 +132,7 @@ export default function App() {
               </button>
             </div>
           </div>
-          
+
           {/* Confirm Password — only show on signup */}
           {authMode === 'signup' && (
             <div style={ls.fieldGroup}>
@@ -159,6 +159,20 @@ export default function App() {
           >
             {loading ? 'Please wait...' : authMode === 'login' ? 'Sign In' : 'Create Account'}
           </button>
+          
+          <p style={{ textAlign: 'center', fontSize: 13, color: '#6B7280', margin: 0 }}>
+            {authMode === 'login' ? "Don't have an account? " : 'Already have an account? '}
+            <span
+              style={{ color: '#6EE7B7', cursor: 'pointer', fontWeight: 600 }}
+              onClick={() => {
+                setAuthMode(authMode === 'login' ? 'signup' : 'login')
+                setError('')
+                setConfirmPassword('')
+              }}
+            >
+              {authMode === 'login' ? 'Sign Up' : 'Sign In'}
+            </span>
+          </p>
         </div>
 
         <div style={ls.footer}>Payment Management System · Bill Gates</div>
