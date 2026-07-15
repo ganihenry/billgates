@@ -39,3 +39,18 @@ page.drawText(formattedDate, {
   x: width - 180, y: height - 68,
   size: 10, font: fontRegular, color: grey,
 })
+
+page.drawLine({
+  start: { x: 40, y: height - 100 },
+  end: { x: width - 40, y: height - 100 },
+  thickness: 1, color: rgb(0.15, 0.17, 0.22),
+})
+
+page.drawText('BILLED TO', {
+  x: 40, y: height - 130,
+  size: 9, font: fontBold, color: grey,
+})
+page.drawText(customerName, {
+  x: 40, y: height - 148,
+  size: 16, font: fontBold, color: rgb(0.94, 0.96, 1),
+})
