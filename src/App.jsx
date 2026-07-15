@@ -135,8 +135,12 @@ export default function App() {
 
           {error && <p style={{ color: '#F87171', fontSize: 13, margin: 0 }}>{error}</p>}
 
-          <button style={ls.submitBtn} onClick={handleLogin} disabled={loading}>
-            {loading ? 'Signing in...' : 'Sign In'}
+          <button
+            style={ls.submitBtn}
+            onClick={authMode === 'login' ? handleLogin : handleSignUp}
+            disabled={loading}
+          >
+            {loading ? 'Please wait...' : authMode === 'login' ? 'Sign In' : 'Create Account'}
           </button>
         </div>
 
