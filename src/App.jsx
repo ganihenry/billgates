@@ -132,6 +132,23 @@ export default function App() {
               </button>
             </div>
           </div>
+          
+          {/* Confirm Password — only show on signup */}
+          {authMode === 'signup' && (
+            <div style={ls.fieldGroup}>
+              <label style={ls.label}>Confirm Password</label>
+              <div style={{ position: 'relative' }}>
+                <span style={ls.fieldIcon}>🔒</span>
+                <input
+                  style={ls.input}
+                  type={showPassword ? 'text' : 'password'}
+                  placeholder="Re-enter your password"
+                  value={confirmPassword}
+                  onChange={e => setConfirmPassword(e.target.value)}
+                />
+              </div>
+            </div>
+          )}
 
           {error && <p style={{ color: '#F87171', fontSize: 13, margin: 0 }}>{error}</p>}
 
