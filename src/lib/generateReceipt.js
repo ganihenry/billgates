@@ -12,3 +12,7 @@ export async function generateReceiptPDF({ customerName, amount, paidAt, receipt
   const dark = rgb(0.08, 0.09, 0.12)
   const grey = rgb(0.42, 0.45, 0.50)
 }
+
+page.drawRectangle({ x: 0, y: 0, width, height, color: dark })
+
+page.drawRectangle({ x: 0, y: height - 80, width, height: 80, color: rgb(0.07, 0.08, 0.10) })
