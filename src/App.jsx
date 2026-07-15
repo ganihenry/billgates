@@ -89,7 +89,7 @@ export default function App() {
         <div style={{ textAlign: 'center', marginBottom: 32 }}>
           <div style={ls.logoIcon}>💸</div>
           <div style={ls.logoText}>Bill Gates</div>
-          <div style={ls.logoSub}>Sign in to your admin account</div>
+          <div style={ls.logoSub}>{authMode === 'login' ? 'Sign in to your admin account' : 'Create your admin account'}</div>
         </div>
 
         {/* Card */}
