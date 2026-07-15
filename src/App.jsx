@@ -14,7 +14,7 @@ export default function App() {
   const [loading, setLoading] = useState(false)
   const [showPassword, setShowPassword] = useState(false)
   const [page, setPage] = useState('dashboard')
-  const [authMode, setAuthMosde] = useState('login')
+  const [authMode, setAuthMossde] = useState('login')
 
   useEffect(() => {
     supabase.auth.getSession().then(({ data: { session } }) => {
@@ -33,6 +33,19 @@ export default function App() {
     setLoading(true)
     setError('')
     const { data, error } = await supabase.auth.signInWithPassword({ email, password })
+    if (error) setError(error.message)
+    else setUser(data.user)
+    setLoading(false)
+  }
+
+  async function handleSignUp() {
+    if (password !== confirmPassword) {
+      setError('Passwords do not match')
+      return
+    }
+    setLoading(true)
+    setError('')
+    const { data, error } = await supabase.auth.signUp({ email, password })
     if (error) setError(error.message)
     else setUser(data.user)
     setLoading(false)
