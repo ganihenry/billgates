@@ -8,11 +8,13 @@ import Reminders from './pages/Reminders'
 export default function App() {
   const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
+  const [confirmPassword, setConfirmPassword] = useState('')
   const [user, setUser] = useState(null)
   const [error, setError] = useState('')
   const [loading, setLoading] = useState(false)
   const [showPassword, setShowPassword] = useState(false)
   const [page, setPage] = useState('dashboard')
+  const [authMode, setAuthMossde] = useState('login')
 
   useEffect(() => {
     supabase.auth.getSession().then(({ data: { session } }) => {
@@ -31,6 +33,19 @@ export default function App() {
     setLoading(true)
     setError('')
     const { data, error } = await supabase.auth.signInWithPassword({ email, password })
+    if (error) setError(error.message)
+    else setUser(data.user)
+    setLoading(false)
+  }
+
+  async function handleSignUp() {
+    if (password !== confirmPassword) {
+      setError('Passwords do not match')
+      return
+    }
+    setLoading(true)
+    setError('')
+    const { data, error } = await supabase.auth.signUp({ email, password })
     if (error) setError(error.message)
     else setUser(data.user)
     setLoading(false)
@@ -74,7 +89,7 @@ export default function App() {
         <div style={{ textAlign: 'center', marginBottom: 32 }}>
           <div style={ls.logoIcon}>💸</div>
           <div style={ls.logoText}>Bill Gates</div>
-          <div style={ls.logoSub}>Sign in to your admin account</div>
+          <div style={ls.logoSub}>{authMode === 'login' ? 'Sign in to your admin account' : 'Create your admin account'}</div>
         </div>
 
         {/* Card */}
@@ -118,11 +133,46 @@ export default function App() {
             </div>
           </div>
 
+          {/* Confirm Password — only show on signup */}
+          {authMode === 'signup' && (
+            <div style={ls.fieldGroup}>
+              <label style={ls.label}>Confirm Password</label>
+              <div style={{ position: 'relative' }}>
+                <span style={ls.fieldIcon}>🔒</span>
+                <input
+                  style={ls.input}
+                  type={showPassword ? 'text' : 'password'}
+                  placeholder="Re-enter your password"
+                  value={confirmPassword}
+                  onChange={e => setConfirmPassword(e.target.value)}
+                />
+              </div>
+            </div>
+          )}
+
           {error && <p style={{ color: '#F87171', fontSize: 13, margin: 0 }}>{error}</p>}
 
-          <button style={ls.submitBtn} onClick={handleLogin} disabled={loading}>
-            {loading ? 'Signing in...' : 'Sign In'}
+          <button
+            style={ls.submitBtn}
+            onClick={authMode === 'login' ? handleLogin : handleSignUp}
+            disabled={loading}
+          >
+            {loading ? 'Please wait...' : authMode === 'login' ? 'Sign In' : 'Create Account'}
           </button>
+          
+          <p style={{ textAlign: 'center', fontSize: 13, color: '#6B7280', margin: 0 }}>
+            {authMode === 'login' ? "Don't have an account? " : 'Already have an account? '}
+            <span
+              style={{ color: '#6EE7B7', cursor: 'pointer', fontWeight: 600 }}
+              onClick={() => {
+                setAuthMode(authMode === 'login' ? 'signup' : 'login')
+                setError('')
+                setConfirmPassword('')
+              }}
+            >
+              {authMode === 'login' ? 'Sign Up' : 'Sign In'}
+            </span>
+          </p>
         </div>
 
         <div style={ls.footer}>Payment Management System · Bill Gates</div>
