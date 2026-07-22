@@ -96,8 +96,12 @@ const styles = {
   },
   title: { margin: 0, fontSize: '20px', fontWeight: 700, color: '#F0F4FF', fontFamily: 'Syne, sans-serif' },
   input: {
-    padding: '10px', borderRadius: '8px', border: '1px solid #e2e8f0',
-    fontSize: '15px', boxSizing: 'border-box', width: '100%',
+    padding: '11px 14px', borderRadius: '8px',
+    border: '1px solid rgba(255,255,255,0.08)',
+    background: '#1a1e2a',
+    fontSize: '14px', boxSizing: 'border-box', width: '100%',
+    color: '#F0F4FF', fontFamily: 'DM Sans, sans-serif',
+    outline: 'none', transition: 'border-color 0.15s',
   },
   buttons: { display: 'flex', gap: '12px', marginTop: '4px' },
   cancelBtn: {
