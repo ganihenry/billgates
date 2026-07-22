@@ -3,8 +3,7 @@ import { useEffect, useState } from 'react'
 import { supabase } from '../lib/supabaseClient'
 import EditCustomerForm from '../components/EditCustomerForm'
 import AddCustomerForm from '../components/AddCustomerForm'
-import { getPaymentsForMonth, updatePaymentStatus, sendWhatsAppReminder } from '../lib/paymentUtils'
-import { generateReceiptPDF } from '../lib/generateReceipt'
+import { getPaymentsForMonth, updatePaymentStatus, sendWhatsAppReminder, createPaymentForMonth } from '../lib/paymentUtils'
 
 export default function Dashboard({ onLogout, onNavigate }) {
   const [customers, setCustomers] = useState([])
@@ -288,16 +287,34 @@ export default function Dashboard({ onLogout, onNavigate }) {
                               onMouseLeave={e => { e.target.style.color = '#9CA3AF'; e.target.style.borderColor = 'rgba(255,255,255,0.07)'; e.target.style.background = '#1a1e2a' }}
                               onClick={async () => {
                                 try {
+                                  let currentPayment = payment
+                                  if (!currentPayment) {
+                                    await createPaymentForMonth(c.id, c.monthly_fee)
+                                    // Fetch directly from Supabase instead of relying on state
+                                    const today = new Date()
+                                    const month = `${today.getFullYear()}-${String(today.getMonth() + 1).padStart(2, '0')}`
+                                    const { data } = await supabase
+                                      .from('payments')
+                                      .select('*')
+                                      .eq('customer_id', c.id)
+                                      .eq('month', month)
+                                      .single()
+                                    currentPayment = data
+                                  }
+                                  if (!currentPayment?.id) {
+                                    alert('Could not find payment record. Please refresh and try again.')
+                                    return
+                                  }
                                   const url = await createPaymentLink(
-                                    payment.id,
+                                    currentPayment.id,
                                     c.id,
                                     c.name,
                                     c.monthly_fee
-                                  );
-                                  await navigator.clipboard.writeText(url);
-                                  alert('Payment link copied! Paste it into WhatsApp.');
+                                  )
+                                  await navigator.clipboard.writeText(url)
+                                  alert('Payment link copied! Paste it into WhatsApp.')
                                 } catch (err) {
-                                  alert('Error generating link: ' + err.message);
+                                  alert('Error generating link: ' + err.message)
                                 }
                               }}>
                               💳 PayNow
