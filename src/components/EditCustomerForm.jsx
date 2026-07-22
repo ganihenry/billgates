@@ -105,12 +105,17 @@ const styles = {
   },
   buttons: { display: 'flex', gap: '12px', marginTop: '4px' },
   cancelBtn: {
-    flex: 1, padding: '10px', borderRadius: '8px', border: '1px solid #e2e8f0',
-    backgroundColor: 'white', color: '#4a5568', fontSize: '15px', cursor: 'pointer',
+    flex: 1, padding: '11px', borderRadius: '8px',
+    border: '1px solid rgba(255,255,255,0.08)',
+    backgroundColor: '#1a1e2a', color: '#9CA3AF',
+    fontSize: '14px', cursor: 'pointer',
+    fontFamily: 'DM Sans, sans-serif', fontWeight: 600,
   },
   saveBtn: {
-    flex: 1, padding: '10px', borderRadius: '8px', border: 'none',
-    backgroundColor: '#4f46e5', color: 'white', fontSize: '15px', cursor: 'pointer',
+    flex: 1, padding: '11px', borderRadius: '8px', border: 'none',
+    background: 'linear-gradient(135deg, #6EE7B7, #34D399)',
+    color: '#000', fontSize: '14px', cursor: 'pointer',
+    fontFamily: 'DM Sans, sans-serif', fontWeight: 700,
   },
   label: {
     display: 'block',
