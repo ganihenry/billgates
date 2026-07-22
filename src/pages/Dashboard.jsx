@@ -279,7 +279,7 @@ export default function Dashboard({ onLogout, onNavigate }) {
                             disabled={payment?.status === 'paid'}>
                             Remind
                           </button>
-                          {(payment?.status === 'unpaid' || payment?.status === 'overdue') && (
+                          {(!payment || payment?.status === 'unpaid' || payment?.status === 'overdue') && (
                             <button
                               style={s.btnRemind}
                               onMouseEnter={e => { e.target.style.color = '#818CF8'; e.target.style.borderColor = 'rgba(129,140,248,0.3)'; e.target.style.background = 'rgba(129,140,248,0.08)' }}
