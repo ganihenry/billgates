@@ -1,5 +1,6 @@
 import Stripe from 'stripe';
 import { createClient } from '@supabase/supabase-js';
+import { generateReceiptPDF } from '../src/lib/generateReceipt.js';
 
 const stripe = new Stripe(process.env.STRIPE_SECRET_KEY);
 const supabase = createClient(
@@ -62,7 +63,6 @@ export default async function handler(req, res) {
                 .eq('id', paymentId)
                 .single()
             // Generate PDF receipt
-            const { generateReceiptPDF } = await import('../src/lib/generateReceipt.js')
 
             const pdfBytes = await generateReceiptPDF({
                 customerName: paymentData?.customers?.name || 'Customer',
@@ -92,8 +92,7 @@ export default async function handler(req, res) {
                         body: new URLSearchParams({
                             From: `whatsapp:${fromNumber}`,
                             To: `whatsapp:${toNumber}`,
-                            Body: `Hi ${paymentData?.customers?.contact_name}, thank you for your payment of $${paymentData?.amount}! Please find your receipt attached. Receipt #${receiptNumber}`,
-                            MediaUrl: pdfDataUri,
+                            Body: `Hi ${paymentData?.customers?.contact_name}, thank you for your payment of $${paymentData?.amount}! Your receipt number is ${receiptNumber}. Thank you!`,
                         }),
                     }
                 )
