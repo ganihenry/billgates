@@ -365,7 +365,7 @@ const s = {
   tr: { borderBottom: '1px solid rgba(255,255,255,0.07)', transition: 'background 0.12s' },
   td: { padding: '15px 24px', fontSize: 14, verticalAlign: 'middle' },
   btnEdit: { padding: '6px 12px', borderRadius: 6, fontFamily: 'DM Sans, sans-serif', fontSize: 12, fontWeight: 500, cursor: 'pointer', border: '1px solid rgba(255,255,255,0.07)', background: '#1a1e2a', color: '#9CA3AF', transition: 'all 0.15s' },
-  btnDelete: { padding: '6px 12px', borderRadius: 6, fontFamily: 'DM Sans, sans-serif', fontSize: 12, fontWeight: 500, cursor: 'pointer', border: '1px solid transparent', background: 'transparent', color: '#6B7280', transition: 'all 0.15s' },
+  btnDelete: { padding: '6px 12px', borderRadius: 6, fontFamily: 'DM Sans, sans-serif', fontSize: 12, fontWeight: 500, cursor: 'pointer', border: '1px solid rgba(248,113,113,0.15)', background: 'rgba(248,113,113,0.05)', color: '#F87171', transition: 'all 0.15s' },
   badgeUnpaid: { display: 'inline-flex', alignItems: 'center', padding: '4px 10px', borderRadius: 20, fontSize: 12, fontWeight: 500, background: 'rgba(248,113,113,0.1)', color: '#F87171', border: '1px solid rgba(248,113,113,0.2)' },
   statusSelect: { padding: '5px 10px', borderRadius: 20, fontSize: 12, fontWeight: 500, border: '1px solid', cursor: 'pointer', outline: 'none', fontFamily: 'DM Sans, sans-serif' },
   selectPaid: { background: 'rgba(110,231,183,0.1)', color: '#6EE7B7', borderColor: 'rgba(110,231,183,0.2)' },
