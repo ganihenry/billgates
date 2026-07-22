@@ -70,9 +70,27 @@ export default async function handler(req, res) {
                 paidAt: paymentData?.paid_at || new Date().toISOString(),
                 receiptNumber: receiptNumber,
             })
-            // Convert PDF to base64
-            const pdfBase64 = Buffer.from(pdfBytes).toString('base64')
-            const pdfDataUri = `data:application/pdf;base64,${pdfBase64}`
+            // Upload PDF to Supabase Storage
+            const fileName = `receipt-${receiptNumber}.pdf`
+            const { data: uploadData, error: uploadError } = await supabase
+                .storage
+                .from('receipts')
+                .upload(fileName, pdfBytes, {
+                    contentType: 'application/pdf',
+                    upsert: true,
+                })
+
+            if (uploadError) {
+                console.error('PDF upload failed:', uploadError)
+            }
+
+            // Get public URL
+            const { data: urlData } = supabase
+                .storage
+                .from('receipts')
+                .getPublicUrl(fileName)
+
+            const pdfUrl = urlData?.publicUrl
 
             // Send PDF via Twilio WhatsApp
             const accountSid = process.env.TWILIO_ACCOUNT_SID
@@ -92,7 +110,7 @@ export default async function handler(req, res) {
                         body: new URLSearchParams({
                             From: `whatsapp:${fromNumber}`,
                             To: `whatsapp:${toNumber}`,
-                            Body: `Hi ${paymentData?.customers?.contact_name}, thank you for your payment of $${paymentData?.amount}! Your receipt number is ${receiptNumber}. Thank you!`,
+                            Body: `Hi ${paymentData?.customers?.contact_name}, thank you for your payment of $${paymentData?.amount}! Your receipt number is ${receiptNumber}. Download your receipt here: ${pdfUrl}`,
                         }),
                     }
                 )
