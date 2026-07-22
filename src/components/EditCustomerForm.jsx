@@ -89,11 +89,12 @@ const styles = {
     zIndex: 1000,
   },
   modal: {
-    backgroundColor: 'white', padding: '32px', borderRadius: '12px',
-    width: '100%', maxWidth: '440px', display: 'flex', flexDirection: 'column', gap: '12px',
-    boxShadow: '0 8px 30px rgba(0,0,0,0.2)',
+    backgroundColor: '#13161e', padding: '32px', borderRadius: '16px',
+    width: '100%', maxWidth: '480px', display: 'flex', flexDirection: 'column', gap: '12px',
+    boxShadow: '0 8px 40px rgba(0,0,0,0.6)',
+    border: '1px solid rgba(255,255,255,0.08)',
   },
-  title: { margin: 0, fontSize: '20px', color: '#1a202c' },
+  title: { margin: 0, fontSize: '20px', fontWeight: 700, color: '#F0F4FF', fontFamily: 'Syne, sans-serif' },
   input: {
     padding: '10px', borderRadius: '8px', border: '1px solid #e2e8f0',
     fontSize: '15px', boxSizing: 'border-box', width: '100%',
