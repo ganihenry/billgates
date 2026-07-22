@@ -70,6 +70,34 @@ export default async function handler(req, res) {
                 paidAt: paymentData?.paid_at || new Date().toISOString(),
                 receiptNumber: receiptNumber,
             })
+            // Convert PDF to base64
+            const pdfBase64 = Buffer.from(pdfBytes).toString('base64')
+            const pdfDataUri = `data:application/pdf;base64,${pdfBase64}`
+
+            // Send PDF via Twilio WhatsApp
+            const accountSid = process.env.TWILIO_ACCOUNT_SID
+            const authToken = process.env.TWILIO_AUTH_TOKEN
+            const fromNumber = process.env.TWILIO_WHATSAPP_FROM
+            const toNumber = paymentData?.customers?.contact_phone
+
+            if (toNumber) {
+                await fetch(
+                    `https://api.twilio.com/2010-04-01/Accounts/${accountSid}/Messages.json`,
+                    {
+                        method: 'POST',
+                        headers: {
+                            'Authorization': 'Basic ' + Buffer.from(`${accountSid}:${authToken}`).toString('base64'),
+                            'Content-Type': 'application/x-www-form-urlencoded',
+                        },
+                        body: new URLSearchParams({
+                            From: `whatsapp:${fromNumber}`,
+                            To: `whatsapp:${toNumber}`,
+                            Body: `Hi ${paymentData?.customers?.contact_name}, thank you for your payment of $${paymentData?.amount}! Please find your receipt attached. Receipt #${receiptNumber}`,
+                            MediaUrl: pdfDataUri,
+                        }),
+                    }
+                )
+            }
         }
     }
 
