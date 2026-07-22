@@ -290,11 +290,23 @@ export default function Dashboard({ onLogout, onNavigate }) {
                                   let currentPayment = payment
                                   if (!currentPayment) {
                                     await createPaymentForMonth(c.id, c.monthly_fee)
-                                    await fetchPayments()
-                                    currentPayment = getPayment(c.id)
+                                    // Fetch directly from Supabase instead of relying on state
+                                    const today = new Date()
+                                    const month = `${today.getFullYear()}-${String(today.getMonth() + 1).padStart(2, '0')}`
+                                    const { data } = await supabase
+                                      .from('payments')
+                                      .select('*')
+                                      .eq('customer_id', c.id)
+                                      .eq('month', month)
+                                      .single()
+                                    currentPayment = data
+                                  }
+                                  if (!currentPayment?.id) {
+                                    alert('Could not find payment record. Please refresh and try again.')
+                                    return
                                   }
                                   const url = await createPaymentLink(
-                                    currentPayment?.id,
+                                    currentPayment.id,
                                     c.id,
                                     c.name,
                                     c.monthly_fee
