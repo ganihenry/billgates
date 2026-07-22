@@ -135,6 +135,7 @@ export default function Dashboard({ onLogout, onNavigate }) {
             <div key={label}
               style={{ ...s.navItem, ...(label === 'Dashboard' ? s.navActive : {}) }}
               onClick={() => {
+                if (label === 'Customers') onNavigate('dashboard')
                 if (label === 'Payments') onNavigate('history')
                 if (label === 'Reminders') onNavigate('reminders')
                 if (label === 'Reports') onNavigate('reports')
