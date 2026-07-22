@@ -108,7 +108,7 @@ const f = {
     transition: 'border-color 0.15s',
   },
   btn: {
-    padding: '10px 24px',
+    padding: '12px 28px',
     background: 'linear-gradient(135deg, #6EE7B7, #34D399)',
     color: '#000',
     border: 'none',
@@ -116,5 +116,6 @@ const f = {
     fontSize: 14, fontWeight: 700,
     cursor: 'pointer',
     fontFamily: 'DM Sans, sans-serif',
+    letterSpacing: '0.3px',
   },
 }
