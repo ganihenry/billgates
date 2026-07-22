@@ -89,10 +89,10 @@ const f = {
   },
   group: { display: 'flex', flexDirection: 'column', gap: 6 },
   label: {
-    fontSize: 11, fontWeight: 600,
-    color: '#6B7280',
+    fontSize: 12, fontWeight: 600,
+    color: '#9CA3AF',
     textTransform: 'uppercase',
-    letterSpacing: '0.5px',
+    letterSpacing: '0.6px',
   },
   input: {
     padding: '10px 14px',
