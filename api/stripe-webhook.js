@@ -39,12 +39,15 @@ export default async function handler(req, res) {
         const paymentId = session.metadata?.payment_id;
 
         if (paymentId) {
+            const receiptNumber = `RCP-${Date.now()}`
+
             const { error } = await supabase
                 .from('payments')
                 .update({
                     status: 'paid',
                     paid_at: new Date().toISOString(),
                     stripe_session_id: session.id,
+                    receipt_number: receiptNumber,
                 })
                 .eq('id', paymentId);
 
