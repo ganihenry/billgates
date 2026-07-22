@@ -136,6 +136,7 @@ export default function Dashboard({ onLogout, onNavigate }) {
             <div key={label}
               style={{ ...s.navItem, ...(label === 'Dashboard' ? s.navActive : {}) }}
               onClick={() => {
+                if (label === 'Customers') onNavigate('dashboard')
                 if (label === 'Payments') onNavigate('history')
                 if (label === 'Reminders') onNavigate('reminders')
                 if (label === 'Reports') onNavigate('reports')
@@ -280,7 +281,7 @@ export default function Dashboard({ onLogout, onNavigate }) {
                             disabled={payment?.status === 'paid'}>
                             Remind
                           </button>
-                          {(payment?.status === 'unpaid' || payment?.status === 'overdue') && (
+                          {(!payment || payment?.status === 'unpaid' || payment?.status === 'overdue') && (
                             <button
                               style={s.btnRemind}
                               onMouseEnter={e => { e.target.style.color = '#818CF8'; e.target.style.borderColor = 'rgba(129,140,248,0.3)'; e.target.style.background = 'rgba(129,140,248,0.08)' }}
@@ -366,7 +367,7 @@ const s = {
   tr: { borderBottom: '1px solid rgba(255,255,255,0.07)', transition: 'background 0.12s' },
   td: { padding: '15px 24px', fontSize: 14, verticalAlign: 'middle' },
   btnEdit: { padding: '6px 12px', borderRadius: 6, fontFamily: 'DM Sans, sans-serif', fontSize: 12, fontWeight: 500, cursor: 'pointer', border: '1px solid rgba(255,255,255,0.07)', background: '#1a1e2a', color: '#9CA3AF', transition: 'all 0.15s' },
-  btnDelete: { padding: '6px 12px', borderRadius: 6, fontFamily: 'DM Sans, sans-serif', fontSize: 12, fontWeight: 500, cursor: 'pointer', border: '1px solid transparent', background: 'transparent', color: '#6B7280', transition: 'all 0.15s' },
+  btnDelete: { padding: '6px 12px', borderRadius: 6, fontFamily: 'DM Sans, sans-serif', fontSize: 12, fontWeight: 500, cursor: 'pointer', border: '1px solid rgba(248,113,113,0.15)', background: 'rgba(248,113,113,0.05)', color: '#F87171', transition: 'all 0.15s' },
   badgeUnpaid: { display: 'inline-flex', alignItems: 'center', padding: '4px 10px', borderRadius: 20, fontSize: 12, fontWeight: 500, background: 'rgba(248,113,113,0.1)', color: '#F87171', border: '1px solid rgba(248,113,113,0.2)' },
   statusSelect: { padding: '5px 10px', borderRadius: 20, fontSize: 12, fontWeight: 500, border: '1px solid', cursor: 'pointer', outline: 'none', fontFamily: 'DM Sans, sans-serif' },
   selectPaid: { background: 'rgba(110,231,183,0.1)', color: '#6EE7B7', borderColor: 'rgba(110,231,183,0.2)' },

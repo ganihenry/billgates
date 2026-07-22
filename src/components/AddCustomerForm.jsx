@@ -28,8 +28,6 @@ export default function AddCustomerForm({ onCustomerAdded }) {
       payment_day: parseInt(form.payment_day),
       reminder_days_before: parseInt(form.reminder_days_before) || 3,
     }]).select()
-    console.log('inserted customer:', inserted)
-    console.log('insert error:', error)
 
     if (error) {
       setError(error.message)
@@ -86,18 +84,18 @@ const f = {
   grid: {
     display: 'grid',
     gridTemplateColumns: 'repeat(3, 1fr)',
-    gap: 14,
-    marginBottom: 16,
+    gap: 20,
+    marginBottom: 24,
   },
   group: { display: 'flex', flexDirection: 'column', gap: 6 },
   label: {
-    fontSize: 11, fontWeight: 600,
-    color: '#6B7280',
+    fontSize: 12, fontWeight: 600,
+    color: '#9CA3AF',
     textTransform: 'uppercase',
-    letterSpacing: '0.5px',
+    letterSpacing: '0.6px',
   },
   input: {
-    padding: '10px 14px',
+    padding: '11px 14px',
     background: '#1a1e2a',
     border: '1px solid rgba(255,255,255,0.08)',
     borderRadius: 8,
@@ -107,9 +105,10 @@ const f = {
     fontFamily: 'DM Sans, sans-serif',
     width: '100%',
     boxSizing: 'border-box',
+    transition: 'border-color 0.15s',
   },
   btn: {
-    padding: '10px 24px',
+    padding: '12px 28px',
     background: 'linear-gradient(135deg, #6EE7B7, #34D399)',
     color: '#000',
     border: 'none',
@@ -117,5 +116,6 @@ const f = {
     fontSize: 14, fontWeight: 700,
     cursor: 'pointer',
     fontFamily: 'DM Sans, sans-serif',
+    letterSpacing: '0.3px',
   },
 }
