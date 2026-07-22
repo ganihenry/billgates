@@ -61,6 +61,15 @@ export default async function handler(req, res) {
                 .select('*, customers(*)')
                 .eq('id', paymentId)
                 .single()
+            // Generate PDF receipt
+            const { generateReceiptPDF } = await import('../src/lib/generateReceipt.js')
+
+            const pdfBytes = await generateReceiptPDF({
+                customerName: paymentData?.customers?.name || 'Customer',
+                amount: paymentData?.amount || 0,
+                paidAt: paymentData?.paid_at || new Date().toISOString(),
+                receiptNumber: receiptNumber,
+            })
         }
     }
 
