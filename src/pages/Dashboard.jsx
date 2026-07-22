@@ -4,6 +4,7 @@ import { supabase } from '../lib/supabaseClient'
 import EditCustomerForm from '../components/EditCustomerForm'
 import AddCustomerForm from '../components/AddCustomerForm'
 import { getPaymentsForMonth, updatePaymentStatus, sendWhatsAppReminder } from '../lib/paymentUtils'
+import { generateReceiptPDF } from '../lib/generateReceipt'
 
 export default function Dashboard({ onLogout, onNavigate }) {
   const [customers, setCustomers] = useState([])
