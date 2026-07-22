@@ -3,8 +3,6 @@ import { useEffect, useState } from 'react'
 import { supabase } from '../lib/supabaseClient'
 import EditCustomerForm from '../components/EditCustomerForm'
 import AddCustomerForm from '../components/AddCustomerForm'
-import { getPaymentsForMonth, updatePaymentStatus, sendWhatsAppReminder } from '../lib/paymentUtils'
-import { generateReceiptPDF } from '../lib/generateReceipt'
 import { getPaymentsForMonth, updatePaymentStatus, sendWhatsAppReminder, createPaymentForMonth } from '../lib/paymentUtils'
 
 export default function Dashboard({ onLogout, onNavigate }) {
@@ -288,29 +286,23 @@ export default function Dashboard({ onLogout, onNavigate }) {
                               onMouseEnter={e => { e.target.style.color = '#818CF8'; e.target.style.borderColor = 'rgba(129,140,248,0.3)'; e.target.style.background = 'rgba(129,140,248,0.08)' }}
                               onMouseLeave={e => { e.target.style.color = '#9CA3AF'; e.target.style.borderColor = 'rgba(255,255,255,0.07)'; e.target.style.background = '#1a1e2a' }}
                               onClick={async () => {
-                                let currentPayment = payment
-                                if (!currentPayment) {
-                                  await createPaymentForMonth(c.id, c.monthly_fee)
-                                  await fetchPayments()
-                                  currentPayment = getPayment(c.id)
-                                }
-                                const url = await createPaymentLink(
-                                  currentPayment?.id,
-                                  c.id,
-                                  c.name,
-                                  c.monthly_fee
-                                );
                                 try {
+                                  let currentPayment = payment
+                                  if (!currentPayment) {
+                                    await createPaymentForMonth(c.id, c.monthly_fee)
+                                    await fetchPayments()
+                                    currentPayment = getPayment(c.id)
+                                  }
                                   const url = await createPaymentLink(
-                                    payment?.id,
+                                    currentPayment?.id,
                                     c.id,
                                     c.name,
                                     c.monthly_fee
-                                  );
-                                  await navigator.clipboard.writeText(url);
-                                  alert('Payment link copied! Paste it into WhatsApp.');
+                                  )
+                                  await navigator.clipboard.writeText(url)
+                                  alert('Payment link copied! Paste it into WhatsApp.')
                                 } catch (err) {
-                                  alert('Error generating link: ' + err.message);
+                                  alert('Error generating link: ' + err.message)
                                 }
                               }}>
                               💳 PayNow
