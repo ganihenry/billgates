@@ -84,8 +84,8 @@ const f = {
   grid: {
     display: 'grid',
     gridTemplateColumns: 'repeat(3, 1fr)',
-    gap: 14,
-    marginBottom: 16,
+    gap: 20,
+    marginBottom: 24,
   },
   group: { display: 'flex', flexDirection: 'column', gap: 6 },
   label: {
