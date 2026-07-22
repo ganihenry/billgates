@@ -95,7 +95,7 @@ const f = {
     letterSpacing: '0.6px',
   },
   input: {
-    padding: '10px 14px',
+    padding: '11px 14px',
     background: '#1a1e2a',
     border: '1px solid rgba(255,255,255,0.08)',
     borderRadius: 8,
@@ -105,6 +105,7 @@ const f = {
     fontFamily: 'DM Sans, sans-serif',
     width: '100%',
     boxSizing: 'border-box',
+    transition: 'border-color 0.15s',
   },
   btn: {
     padding: '10px 24px',
