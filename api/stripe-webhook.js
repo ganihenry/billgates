@@ -55,6 +55,12 @@ export default async function handler(req, res) {
                 console.error('Supabase update failed:', error);
                 return res.status(500).json({ error: 'DB update failed' });
             }
+            // Fetch payment and customer details for receipt
+            const { data: paymentData } = await supabase
+                .from('payments')
+                .select('*, customers(*)')
+                .eq('id', paymentId)
+                .single()
         }
     }
 
