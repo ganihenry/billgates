@@ -28,8 +28,6 @@ export default function AddCustomerForm({ onCustomerAdded }) {
       payment_day: parseInt(form.payment_day),
       reminder_days_before: parseInt(form.reminder_days_before) || 3,
     }]).select()
-    console.log('inserted customer:', inserted)
-    console.log('insert error:', error)
 
     if (error) {
       setError(error.message)
