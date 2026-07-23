@@ -14,8 +14,7 @@ export default function App() {
   const [loading, setLoading] = useState(false)
   const [showPassword, setShowPassword] = useState(false)
   const [page, setPage] = useState('dashboard')
-  const [authMode, setAuthMossde] = useState('login')
-
+  const [authMode, setAuthMode] = useState('login')
   useEffect(() => {
     supabase.auth.getSession().then(({ data: { session } }) => {
       setUser(session?.user ?? null)
@@ -159,7 +158,7 @@ export default function App() {
           >
             {loading ? 'Please wait...' : authMode === 'login' ? 'Sign In' : 'Create Account'}
           </button>
-          
+
           <p style={{ textAlign: 'center', fontSize: 13, color: '#6B7280', margin: 0 }}>
             {authMode === 'login' ? "Don't have an account? " : 'Already have an account? '}
             <span
