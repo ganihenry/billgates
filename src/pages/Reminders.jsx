@@ -70,7 +70,7 @@ export default function Reminders({ onLogout, onNavigate }) {
       .replace(/{due_date}/g, due_date)
       .replace(/{payment_link}/g, paymentLink)
 
-      try {
+    try {
       paymentLink = await createPaymentLink(
         payment?.id,
         customer.id,
@@ -131,17 +131,16 @@ export default function Reminders({ onLogout, onNavigate }) {
           </div>
         </div>
         <nav style={s.nav}>
-          {[['⊞', 'Dashboard'], ['👥', 'Customers'], ['💳', 'Payments'], ['🔔', 'Reminders'], ['📊', 'Reports']].map(([icon, label]) => (
-            <div key={label}
-              style={{ ...s.navItem, ...(label === 'Reminders' ? s.navActive : {}) }}
-              onClick={() => {
-                if (label === 'Dashboard') onNavigate('dashboard')
-                if (label === 'Payments') onNavigate('history')
-                if (label === 'Reports') onNavigate('reports')
-              }}
-            >
-              <span style={{ width: 20, textAlign: 'center' }}>{icon}</span> {label}
-            </div>
+          {[['⊞', 'Dashboard'], ['💳', 'Payments'], ['🔔', 'Reminders'], ['📊', 'Reports']].map(([icon, label]) => (<div key={label}
+            style={{ ...s.navItem, ...(label === 'Reminders' ? s.navActive : {}) }}
+            onClick={() => {
+              if (label === 'Dashboard') onNavigate('dashboard')
+              if (label === 'Payments') onNavigate('history')
+              if (label === 'Reports') onNavigate('reports')
+            }}
+          >
+            <span style={{ width: 20, textAlign: 'center' }}>{icon}</span> {label}
+          </div>
           ))}
         </nav>
         <div style={s.sidebarFooter}>
